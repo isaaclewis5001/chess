@@ -23,7 +23,7 @@ public class ChessBoard {
     }
 
     /**
-     * Gets a chess piece on the chessboard
+     * Gets a chess piece on the chessboard.
      *
      * @param position The position to get the piece from
      * @return Either the piece at the position, or null if no piece is at that
