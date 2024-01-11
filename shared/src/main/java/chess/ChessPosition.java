@@ -67,4 +67,11 @@ public class ChessPosition {
     public int hashCode() {
         return row << 16 | column;
     }
+
+    /**
+     * @return An index in the range [0...63] unique to this square on the chessboard.
+     */
+    public int getIndex() {
+        return row + column * 8 - 9;
+    }
 }
