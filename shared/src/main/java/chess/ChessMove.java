@@ -14,8 +14,8 @@ public class ChessMove {
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
-        this.startPos = startPosition;
-        this.endPos = endPosition;
+        this.startPos = startPosition.copy();
+        this.endPos = endPosition.copy();
         this.promotion = promotionPiece;
     }
 

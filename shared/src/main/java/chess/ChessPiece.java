@@ -47,8 +47,35 @@ public class ChessPiece {
     }
 
 
-    private void scanMoveLine(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition, int right, int up) {
-        throw new RuntimeException("Not implemented");
+    /**
+     * @return Whether this piece can capture the given piece, or false if it is null.
+     * @param other The chess piece to be captured, or null for an empty square.
+     * **/
+    public boolean canCapture(ChessPiece other) {
+        if (other == null) {
+            return false;
+        }
+        return other.pieceColor != pieceColor;
+    }
+
+
+    private boolean addMove(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition, ChessPosition newPosition) {
+        if (!newPosition.isOnBoard()) {
+            return false;
+        }
+        ChessPiece piece = board.getPiece(newPosition);
+        if (piece == null || canCapture(piece)) {
+            addTo.add(new ChessMove(myPosition, newPosition, null));
+            return piece == null;
+        }
+        return false;
+    }
+
+    private void scanMoveLine(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition, int up, int right) {
+        ChessPosition newPos = myPosition.copy();
+        do {
+            newPos.offset(right, up);
+        } while(addMove(addTo, board, myPosition, newPos));
     }
 
     private void addRookMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {

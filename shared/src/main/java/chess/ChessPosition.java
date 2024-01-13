@@ -15,6 +15,10 @@ public class ChessPosition {
         this.column = col;
     }
 
+    public ChessPosition(ChessPosition toCopy) {
+        this(toCopy.row, toCopy.column);
+    }
+
     /**
      * @return Which row this position is in, with 1
      * coding for the bottom row.
@@ -50,6 +54,20 @@ public class ChessPosition {
     public void offset(int row_off, int col_off) {
         row += row_off;
         column += col_off;
+    }
+
+    /**
+     * Applies a translation to this position.
+     * @return The translated position.
+     * @param row_off How far to translate forward.
+     * @param col_off How for to translate rightwards.
+     */
+    public ChessPosition getOffset(int row_off, int col_off) {
+        return new ChessPosition(row + row_off, column + col_off);
+    }
+
+    public ChessPosition copy() {
+        return new ChessPosition(this);
     }
 
     @Override
