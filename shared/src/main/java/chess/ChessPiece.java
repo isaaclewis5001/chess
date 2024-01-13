@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+
 
 /**
  * Represents a single chess piece
@@ -44,6 +46,34 @@ public class ChessPiece {
         return type;
     }
 
+
+    private void scanMoveLine(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition, int right, int up) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    private void addRookMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
+        throw new RuntimeException("Not implemented");
+    }
+
+
+    private void addBishopMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
+        throw new RuntimeException("Not implemented");
+    }
+
+
+    private void addKnightMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    private void addKingMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
+        throw new RuntimeException("Not implemented");
+    }
+
+    private void addPawnMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
+        throw new RuntimeException("Not implemented");
+    }
+
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -52,7 +82,23 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = new ArrayList<>();
+        switch (type) {
+            case KNIGHT:
+                addKnightMoves(moves, board, myPosition);
+            case ROOK:
+                addRookMoves(moves, board, myPosition);
+            case BISHOP:
+                addBishopMoves(moves, board, myPosition);
+            case QUEEN:
+                addRookMoves(moves, board, myPosition);
+                addBishopMoves(moves, board, myPosition);
+            case KING:
+                addKingMoves(moves, board, myPosition);
+            case PAWN:
+                addPawnMoves(moves, board, myPosition);
+        }
+        return moves;
     }
 
 
