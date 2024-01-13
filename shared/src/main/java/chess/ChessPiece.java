@@ -1,7 +1,7 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 
 /**
@@ -79,12 +79,18 @@ public class ChessPiece {
     }
 
     private void addRookMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        scanMoveLine(addTo, board, myPosition, 1, 0);
+        scanMoveLine(addTo, board, myPosition, -1, 0);
+        scanMoveLine(addTo, board, myPosition, 0, 1);
+        scanMoveLine(addTo, board, myPosition, 0, -1);
     }
 
 
     private void addBishopMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        scanMoveLine(addTo, board, myPosition, 1, 1);
+        scanMoveLine(addTo, board, myPosition, -1, 1);
+        scanMoveLine(addTo, board, myPosition, 1, -1);
+        scanMoveLine(addTo, board, myPosition, -1, -1);
     }
 
 
@@ -109,21 +115,27 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new HashSet<>();
         switch (type) {
             case KNIGHT:
                 addKnightMoves(moves, board, myPosition);
+                break;
             case ROOK:
                 addRookMoves(moves, board, myPosition);
+                break;
             case BISHOP:
                 addBishopMoves(moves, board, myPosition);
+                break;
             case QUEEN:
                 addRookMoves(moves, board, myPosition);
                 addBishopMoves(moves, board, myPosition);
+                break;
             case KING:
                 addKingMoves(moves, board, myPosition);
+                break;
             case PAWN:
                 addPawnMoves(moves, board, myPosition);
+                break;
         }
         return moves;
     }
