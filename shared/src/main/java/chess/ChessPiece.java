@@ -95,7 +95,14 @@ public class ChessPiece {
 
 
     private void addKnightMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        addMove(addTo, board, myPosition, myPosition.getOffset(1,2));
+        addMove(addTo, board, myPosition, myPosition.getOffset(-1,2));
+        addMove(addTo, board, myPosition, myPosition.getOffset(1,-2));
+        addMove(addTo, board, myPosition, myPosition.getOffset(-1,-2));
+        addMove(addTo, board, myPosition, myPosition.getOffset(2,1));
+        addMove(addTo, board, myPosition, myPosition.getOffset(2,-1));
+        addMove(addTo, board, myPosition, myPosition.getOffset(-2,1));
+        addMove(addTo, board, myPosition, myPosition.getOffset(-2,-1));
     }
 
     private void addKingMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
