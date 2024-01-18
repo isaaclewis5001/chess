@@ -71,6 +71,27 @@ public class ChessPiece {
         return false;
     }
 
+
+    private boolean addPawnMove(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition, ChessPosition newPosition, boolean promote, boolean isCapture) {
+        if (!newPosition.isOnBoard()) {
+            return false;
+        }
+        ChessPiece piece = board.getPiece(newPosition);
+        if (isCapture ? canCapture(piece) : piece == null) {
+            if (promote) {
+                addTo.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+                addTo.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+                addTo.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
+                addTo.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
+            }
+            else {
+                addTo.add(new ChessMove(myPosition, newPosition, null));
+            }
+            return piece == null;
+        }
+        return false;
+    }
+
     private void scanMoveLine(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition, int up, int right) {
         ChessPosition newPos = myPosition.copy();
         do {
@@ -106,11 +127,33 @@ public class ChessPiece {
     }
 
     private void addKingMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        addMove(addTo, board, myPosition, myPosition.getOffset(1, 1));
+        addMove(addTo, board, myPosition, myPosition.getOffset(0, 1));
+        addMove(addTo, board, myPosition, myPosition.getOffset(-1, 1));
+        addMove(addTo, board, myPosition, myPosition.getOffset(1, 0));
+        addMove(addTo, board, myPosition, myPosition.getOffset(-1, 0));
+        addMove(addTo, board, myPosition, myPosition.getOffset(1, -1));
+        addMove(addTo, board, myPosition, myPosition.getOffset(0, -1));
+        addMove(addTo, board, myPosition, myPosition.getOffset(-1, -1));
     }
 
     private void addPawnMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        int forwards = 1;
+        int rank = myPosition.getRow();
+        if (pieceColor == ChessGame.TeamColor.BLACK) {
+            forwards = -1;
+            rank = 9 - rank;
+        }
+        boolean promote = rank == 7;
+
+        addPawnMove(addTo, board, myPosition, myPosition.getOffset(forwards, 1), promote, true);
+        addPawnMove(addTo, board, myPosition, myPosition.getOffset(forwards, -1), promote, true);
+
+        boolean forwardsBlocked = !addPawnMove(addTo, board, myPosition, myPosition.getOffset(forwards, 0), promote, false);
+        if (!forwardsBlocked && rank == 2) {
+            addPawnMove(addTo, board, myPosition, myPosition.getOffset(forwards * 2, 0), false, false);
+        }
+
     }
 
 
