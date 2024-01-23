@@ -6,9 +6,9 @@ package chess;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessPosition {
-    private int row;
-    private int column;
+public final class ChessPosition {
+    private final int row;
+    private final int column;
 
     public ChessPosition(int row, int col) {
         this.row = row;
@@ -48,16 +48,6 @@ public class ChessPosition {
 
     /**
      * Applies a translation to this position.
-     * @param row_off How far to translate forward.
-     * @param col_off How for to translate rightwards.
-     */
-    public void offset(int row_off, int col_off) {
-        row += row_off;
-        column += col_off;
-    }
-
-    /**
-     * Applies a translation to this position.
      * @return The translated position.
      * @param row_off How far to translate forward.
      * @param col_off How for to translate rightwards.
@@ -85,6 +75,15 @@ public class ChessPosition {
     public int hashCode() {
         return row << 16 | column;
     }
+
+
+    public String toString() {
+        char rowChar = (char)('1' - 1 + this.row);
+        char colChar = (char)('a' - 1 + this.column);
+
+        return String.format("%c%c", colChar, rowChar);
+    }
+
 
     /**
      * @return An index in the range [0...63] unique to this square on the chessboard.

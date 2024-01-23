@@ -48,116 +48,6 @@ public class ChessPiece {
 
 
     /**
-     * @return Whether this piece can capture the given piece, or false if it is null.
-     * @param other The chess piece to be captured, or null for an empty square.
-     * **/
-    public boolean canCapture(ChessPiece other) {
-        if (other == null) {
-            return false;
-        }
-        return other.pieceColor != pieceColor;
-    }
-
-
-    private boolean addMove(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition, ChessPosition newPosition) {
-        if (!newPosition.isOnBoard()) {
-            return false;
-        }
-        ChessPiece piece = board.getPiece(newPosition);
-        if (piece == null || canCapture(piece)) {
-            addTo.add(new ChessMove(myPosition, newPosition, null));
-            return piece == null;
-        }
-        return false;
-    }
-
-
-    private boolean addPawnMove(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition, ChessPosition newPosition, boolean promote, boolean isCapture) {
-        if (!newPosition.isOnBoard()) {
-            return false;
-        }
-        ChessPiece piece = board.getPiece(newPosition);
-        if (isCapture ? canCapture(piece) : piece == null) {
-            if (promote) {
-                addTo.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-                addTo.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
-                addTo.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
-                addTo.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-            }
-            else {
-                addTo.add(new ChessMove(myPosition, newPosition, null));
-            }
-            return piece == null;
-        }
-        return false;
-    }
-
-    private void scanMoveLine(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition, int up, int right) {
-        ChessPosition newPos = myPosition.copy();
-        do {
-            newPos.offset(right, up);
-        } while(addMove(addTo, board, myPosition, newPos));
-    }
-
-    private void addRookMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
-        scanMoveLine(addTo, board, myPosition, 1, 0);
-        scanMoveLine(addTo, board, myPosition, -1, 0);
-        scanMoveLine(addTo, board, myPosition, 0, 1);
-        scanMoveLine(addTo, board, myPosition, 0, -1);
-    }
-
-
-    private void addBishopMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
-        scanMoveLine(addTo, board, myPosition, 1, 1);
-        scanMoveLine(addTo, board, myPosition, -1, 1);
-        scanMoveLine(addTo, board, myPosition, 1, -1);
-        scanMoveLine(addTo, board, myPosition, -1, -1);
-    }
-
-
-    private void addKnightMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
-        addMove(addTo, board, myPosition, myPosition.getOffset(1,2));
-        addMove(addTo, board, myPosition, myPosition.getOffset(-1,2));
-        addMove(addTo, board, myPosition, myPosition.getOffset(1,-2));
-        addMove(addTo, board, myPosition, myPosition.getOffset(-1,-2));
-        addMove(addTo, board, myPosition, myPosition.getOffset(2,1));
-        addMove(addTo, board, myPosition, myPosition.getOffset(2,-1));
-        addMove(addTo, board, myPosition, myPosition.getOffset(-2,1));
-        addMove(addTo, board, myPosition, myPosition.getOffset(-2,-1));
-    }
-
-    private void addKingMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
-        addMove(addTo, board, myPosition, myPosition.getOffset(1, 1));
-        addMove(addTo, board, myPosition, myPosition.getOffset(0, 1));
-        addMove(addTo, board, myPosition, myPosition.getOffset(-1, 1));
-        addMove(addTo, board, myPosition, myPosition.getOffset(1, 0));
-        addMove(addTo, board, myPosition, myPosition.getOffset(-1, 0));
-        addMove(addTo, board, myPosition, myPosition.getOffset(1, -1));
-        addMove(addTo, board, myPosition, myPosition.getOffset(0, -1));
-        addMove(addTo, board, myPosition, myPosition.getOffset(-1, -1));
-    }
-
-    private void addPawnMoves(Collection<ChessMove> addTo, ChessBoard board, ChessPosition myPosition) {
-        int forwards = 1;
-        int rank = myPosition.getRow();
-        if (pieceColor == ChessGame.TeamColor.BLACK) {
-            forwards = -1;
-            rank = 9 - rank;
-        }
-        boolean promote = rank == 7;
-
-        addPawnMove(addTo, board, myPosition, myPosition.getOffset(forwards, 1), promote, true);
-        addPawnMove(addTo, board, myPosition, myPosition.getOffset(forwards, -1), promote, true);
-
-        boolean forwardsBlocked = !addPawnMove(addTo, board, myPosition, myPosition.getOffset(forwards, 0), promote, false);
-        if (!forwardsBlocked && rank == 2) {
-            addPawnMove(addTo, board, myPosition, myPosition.getOffset(forwards * 2, 0), false, false);
-        }
-
-    }
-
-
-    /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
      * danger.
@@ -165,29 +55,11 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new HashSet<>();
-        switch (type) {
-            case KNIGHT:
-                addKnightMoves(moves, board, myPosition);
-                break;
-            case ROOK:
-                addRookMoves(moves, board, myPosition);
-                break;
-            case BISHOP:
-                addBishopMoves(moves, board, myPosition);
-                break;
-            case QUEEN:
-                addRookMoves(moves, board, myPosition);
-                addBishopMoves(moves, board, myPosition);
-                break;
-            case KING:
-                addKingMoves(moves, board, myPosition);
-                break;
-            case PAWN:
-                addPawnMoves(moves, board, myPosition);
-                break;
-        }
-        return moves;
+        MoveCollection moveCollection = new MoveCollection(board, pieceColor);
+        moveCollection.addPieceMoves(type, myPosition);
+
+        // Required because the piece promotion tests tend to freak out if you give them an array list..
+        return new HashSet<>(moveCollection.getMoves());
     }
 
 
