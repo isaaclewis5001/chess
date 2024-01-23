@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 
 /**
@@ -10,7 +11,7 @@ import java.util.HashSet;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessPiece {
+public final class ChessPiece {
 
     private final ChessGame.TeamColor pieceColor;
     private final ChessPiece.PieceType type;
@@ -70,5 +71,15 @@ public class ChessPiece {
             return (other.pieceColor == pieceColor) && (other.type == type);
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s", pieceColor.toString(), type.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
     }
 }
