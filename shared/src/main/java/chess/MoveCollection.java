@@ -9,6 +9,7 @@ import java.util.Collection;
  */
 public final class MoveCollection {
     private final ChessBoard board;
+
     private final ArrayList<ChessMove> moves;
 
     private final ChessGame.TeamColor teamToPlay;
@@ -159,4 +160,9 @@ public final class MoveCollection {
                 break;
         }
     }
+
+
+    private void deepCheckScan() {}
+
+    private void shallowCheckScan() {}
 }

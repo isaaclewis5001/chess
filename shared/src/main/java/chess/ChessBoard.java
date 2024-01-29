@@ -10,6 +10,8 @@ import java.util.Arrays;
  */
 public class ChessBoard {
     private final ChessPiece[] squares;
+    private boolean castleLeft;
+    private boolean castleRight;
 
     public ChessBoard() {
         squares = new ChessPiece[64];
