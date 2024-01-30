@@ -160,9 +160,4 @@ public final class MoveCollection {
                 break;
         }
     }
-
-
-    private void deepCheckScan() {}
-
-    private void shallowCheckScan() {}
 }
