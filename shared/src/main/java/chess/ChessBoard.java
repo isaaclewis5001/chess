@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -10,11 +11,34 @@ import java.util.Arrays;
  */
 public class ChessBoard {
     private final ChessPiece[] squares;
-    private boolean castleLeft;
-    private boolean castleRight;
+    private final TeamInfo whiteTeamInfo;
+    private final TeamInfo blackTeamInfo;
+    private int enPassantFile;
+
+    private ChessGame.TeamColor teamToMove;
 
     public ChessBoard() {
         squares = new ChessPiece[64];
+        whiteTeamInfo = new TeamInfo(ChessGame.TeamColor.WHITE);
+        blackTeamInfo = new TeamInfo(ChessGame.TeamColor.BLACK);
+        enPassantFile = 0;
+        teamToMove = ChessGame.TeamColor.WHITE;
+    }
+
+    public ChessBoard(ChessBoard other) {
+        squares = other.squares.clone();
+        whiteTeamInfo = new TeamInfo(other.whiteTeamInfo);
+        blackTeamInfo = new TeamInfo(other.blackTeamInfo);
+        enPassantFile = other.enPassantFile;
+        teamToMove = other.teamToMove;
+    }
+
+    public ChessGame.TeamColor getTeamToMove() {
+        return teamToMove;
+    }
+
+    public void setTeamToMove(ChessGame.TeamColor teamToMove) {
+        this.teamToMove = teamToMove;
     }
 
     /**
@@ -25,6 +49,9 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         squares[position.getIndex()] = piece;
+        if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING) {
+            getTeamInfo(piece.getTeamColor()).setKingSquare(position);
+        }
     }
 
     /**
@@ -50,11 +77,24 @@ public class ChessBoard {
             ChessPiece.PieceType.ROOK
     };
 
+    public int getEnPassantFile() {
+        return enPassantFile;
+    }
+
+    public void setEnPassantFile(int enPassantFile) {
+        this.enPassantFile = enPassantFile;
+    }
+
     /**
      * Sets the board to the default starting board.
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
+        whiteTeamInfo.reset(ChessGame.TeamColor.WHITE);
+        blackTeamInfo.reset(ChessGame.TeamColor.BLACK);
+        enPassantFile = 0;
+
+
         ChessPiece whitePawn = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         ChessPiece blackPawn = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
         for (int file = 1; file <= 8; file++) {
@@ -71,16 +111,26 @@ public class ChessBoard {
         }
     }
 
+    public TeamInfo getTeamInfo(ChessGame.TeamColor color) {
+        if (color == ChessGame.TeamColor.WHITE) {
+            return whiteTeamInfo;
+        }
+        return blackTeamInfo;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof ChessBoard other) {
-            return Arrays.equals(squares, other.squares);
+            return Arrays.equals(squares, other.squares) &&
+                    whiteTeamInfo.equals(other.whiteTeamInfo) &&
+                    blackTeamInfo.equals(other.blackTeamInfo) &&
+                    enPassantFile == other.enPassantFile;
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(squares);
+        return Objects.hash(Arrays.hashCode(squares), whiteTeamInfo, blackTeamInfo, enPassantFile);
     }
 }

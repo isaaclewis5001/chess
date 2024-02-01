@@ -12,12 +12,9 @@ public final class MoveCollection {
 
     private final ArrayList<ChessMove> moves;
 
-    private final ChessGame.TeamColor teamToPlay;
-
-    public MoveCollection(ChessBoard board, ChessGame.TeamColor teamToPlay) {
+    public MoveCollection(ChessBoard board) {
         moves = new ArrayList<>();
         this.board = board;
-        this.teamToPlay = teamToPlay;
     }
 
     public Collection<ChessMove> getMoves() {
@@ -29,7 +26,7 @@ public final class MoveCollection {
         if (targetPiece == null) {
             return false;
         }
-        return teamToPlay != targetPiece.getTeamColor();
+        return board.getTeamToMove() != targetPiece.getTeamColor();
     }
 
     private boolean addNormalMove(ChessPosition position, ChessPosition newPosition) {
@@ -116,7 +113,7 @@ public final class MoveCollection {
     private void addPawnMoves(ChessPosition position) {
         int forwards = 1;
         int rank = position.getRow();
-        if (teamToPlay == ChessGame.TeamColor.BLACK) {
+        if (board.getTeamToMove() == ChessGame.TeamColor.BLACK) {
             forwards = -1;
             rank = 9 - rank;
         }
