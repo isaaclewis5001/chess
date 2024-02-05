@@ -8,7 +8,7 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public final class ChessMove {
+public final class ChessMove implements ChessMoveInterface {
     ChessPosition startPos;
     ChessPosition endPos;
     ChessPiece.PieceType promotion;
@@ -70,5 +70,15 @@ public final class ChessMove {
         else {
             return String.format("Move %s to %s (promote into %s)", startPos, endPos, promotion);
         }
+    }
+
+    @Override
+    public void makeMove(ChessBoard board) {
+        ChessPiece piece = board.getPiece(startPos);
+        board.addPiece(startPos, null);
+        if (promotion != null) {
+            piece = new ChessPiece(piece.getTeamColor(), promotion);
+        }
+        board.addPiece(endPos, piece);
     }
 }
