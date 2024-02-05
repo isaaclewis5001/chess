@@ -1,7 +1,7 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 
 /**
@@ -10,10 +10,10 @@ import java.util.Collection;
 public final class MoveCollection {
     private final ChessBoard board;
 
-    private final ArrayList<ChessMove> moves;
+    private final HashSet<ChessMove> moves;
 
     public MoveCollection(ChessBoard board) {
-        moves = new ArrayList<>();
+        moves = new HashSet<>();
         this.board = board;
     }
 

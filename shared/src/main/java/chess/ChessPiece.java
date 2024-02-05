@@ -56,7 +56,8 @@ public final class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        MoveCollection moveCollection = new MoveCollection(board, pieceColor);
+        MoveCollection moveCollection = new MoveCollection(board);
+        board.setTeamToMove(pieceColor);
         moveCollection.addPieceMoves(type, myPosition);
 
         // Required because the piece promotion tests tend to freak out if you give them an array list..
