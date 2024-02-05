@@ -10,14 +10,14 @@ import java.util.HashSet;
 public final class MoveCollection {
     private final ChessBoard board;
 
-    private final HashSet<ChessMove> moves;
+    private final HashSet<GenericChessMove> moves;
 
     public MoveCollection(ChessBoard board) {
         moves = new HashSet<>();
         this.board = board;
     }
 
-    public Collection<ChessMove> getMoves() {
+    public Collection<GenericChessMove> getMoves() {
         return moves;
     }
 
@@ -99,7 +99,7 @@ public final class MoveCollection {
         addNormalMove(position, position.getOffset(-2,-1));
     }
 
-    private void addKingMoves(ChessPosition position) {
+    private void addKingMoves(ChessPosition position, boolean considerChecks) {
         addNormalMove(position, position.getOffset(1, 1));
         addNormalMove(position, position.getOffset(0, 1));
         addNormalMove(position, position.getOffset(-1, 1));
@@ -135,7 +135,7 @@ public final class MoveCollection {
      * @param pieceType The type of piece to compute the moves for
      * @param position The starting square of the piece
       */
-    void addPieceMoves(ChessPiece.PieceType pieceType, ChessPosition position) {
+    void addPieceMoves(ChessPiece.PieceType pieceType, ChessPosition position, boolean considerChecks) {
         switch (pieceType) {
             case KNIGHT:
                 addKnightMoves(position);
@@ -150,7 +150,7 @@ public final class MoveCollection {
                 addQueenMoves(position);
                 break;
             case KING:
-                addKingMoves(position);
+                addKingMoves(position, considerChecks);
                 break;
             case PAWN:
                 addPawnMoves(position);

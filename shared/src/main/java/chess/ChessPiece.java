@@ -58,10 +58,16 @@ public final class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         MoveCollection moveCollection = new MoveCollection(board);
         board.setTeamToMove(pieceColor);
-        moveCollection.addPieceMoves(type, myPosition);
+        moveCollection.addPieceMoves(type, myPosition, false);
 
-        // Required because the piece promotion tests tend to freak out if you give them an array list..
-        return new HashSet<>(moveCollection.getMoves());
+        HashSet<ChessMove> outMoves = new HashSet<>();
+        for (GenericChessMove move: moveCollection.getMoves()) {
+            if (move instanceof ChessMove normalMove) {
+                outMoves.add(normalMove);
+            }
+        }
+
+        return outMoves;
     }
 
 

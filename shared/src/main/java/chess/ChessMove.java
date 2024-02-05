@@ -8,7 +8,7 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public final class ChessMove implements ChessMoveInterface {
+public final class ChessMove implements GenericChessMove {
     ChessPosition startPos;
     ChessPosition endPos;
     ChessPiece.PieceType promotion;

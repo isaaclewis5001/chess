@@ -1,5 +1,5 @@
 package chess;
 
-public interface ChessMoveInterface {
+public interface GenericChessMove {
     void makeMove(ChessBoard board);
 }
