@@ -55,9 +55,17 @@ public final class TeamInfo {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o instanceof TeamInfo teamInfo) {
+            boolean kingSquaresEqual;
+            if (kingSquare == null) {
+                kingSquaresEqual = teamInfo.kingSquare == null;
+            }
+            else {
+                kingSquaresEqual = kingSquare.equals(teamInfo.kingSquare);
+            }
+
             return castleShort == teamInfo.castleShort &&
                     castleLong == teamInfo.castleLong &&
-                    kingSquare.equals(teamInfo.kingSquare);
+                    kingSquaresEqual;
         }
         return false;
     }

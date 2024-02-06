@@ -17,7 +17,9 @@ public class ChessGame {
     private int movesSinceCaptureOrPush;
     private boolean isCheck;
     private boolean isGameEnd;
+
     private boolean isCheckmate;
+    private boolean hasMoves;
     private final HashSet<ChessMove> moves;
 
     public ChessGame() {
@@ -40,6 +42,7 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         currentBoard.setTeamToMove(team);
+        calculateMoves();
     }
 
     /**
@@ -65,7 +68,7 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        return moves;
     }
 
     /**
@@ -107,10 +110,15 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        if (teamColor == currentBoard.getTeamToMove()) {
-            return isCheck;
+        boolean wrongColor = teamColor != currentBoard.getTeamToMove();
+        if (wrongColor) {
+            setTeamTurn(teamColor);
         }
-        return false;
+        boolean out = isCheck;
+        if (wrongColor) {
+            setTeamTurn(teamColor.opponent());
+        }
+        return out;
     }
 
     /**
@@ -120,10 +128,15 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if (teamColor == currentBoard.getTeamToMove()) {
-            return isCheckmate;
+        boolean wrongColor = teamColor != currentBoard.getTeamToMove();
+        if (wrongColor) {
+            setTeamTurn(teamColor);
         }
-        return false;
+        boolean out = isCheckmate;
+        if (wrongColor) {
+            setTeamTurn(teamColor.opponent());
+        }
+        return out;
     }
 
     /**
@@ -134,10 +147,15 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        if (teamColor == currentBoard.getTeamToMove()) {
-            return isGameEnd && !isCheckmate;
+        boolean wrongColor = teamColor != currentBoard.getTeamToMove();
+        if (wrongColor) {
+            setTeamTurn(teamColor);
         }
-        return false;
+        boolean out = (isGameEnd || !hasMoves) && !isCheckmate;
+        if (wrongColor) {
+            setTeamTurn(teamColor.opponent());
+        }
+        return out;
     }
 
     /**
@@ -165,14 +183,16 @@ public class ChessGame {
 
     private void calculateMoves() {
         moves.clear();
-
+        if (isGameEnd) {
+            return;
+        }
         MoveCollection movesNow = new MoveCollection(currentBoard);
         movesNow.calculateMoves();
         Collection<ChessMove> candidateMoves = movesNow.getMoves();
 
         isCheckmate = false;
         isCheck = false;
-        isGameEnd = true;
+        hasMoves = false;
 
         for (ChessMove move: candidateMoves) {
             ChessBoard futureBoard = new ChessBoard(currentBoard);
@@ -182,11 +202,10 @@ public class ChessGame {
             MoveCollection movesFuture = new MoveCollection(futureBoard);
             movesFuture.calculateMoves();
             if (movesFuture.isOpponentInCheck()) {
-                System.out.println("Reject " + move);
                 // Reject move as it leaves the king in check
                 continue;
             }
-            isGameEnd = false;
+            hasMoves = true;
             moves.add(move);
         }
 
@@ -195,7 +214,7 @@ public class ChessGame {
         opponentMoves.calculateMoves();
         if (opponentMoves.isOpponentInCheck()) {
             isCheck = true;
-            isCheckmate = isGameEnd;
+            isCheckmate = !hasMoves;
         }
         currentBoard.flipTeam();
     }
