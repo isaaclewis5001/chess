@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 
 /**
@@ -188,5 +189,23 @@ public final class MoveCollection {
             }
         }
         return false;
+    }
+
+    public HashSet<ChessMove> filteredMoves() {
+        HashSet<ChessMove> outMoves = new HashSet<>();
+        for (ChessMove move: moves) {
+            ChessBoard futureBoard = new ChessBoard(board);
+            move.makeMove(futureBoard);
+            futureBoard.flipTeam();
+
+            MoveCollection movesFuture = new MoveCollection(futureBoard);
+            movesFuture.calculateMoves();
+            if (movesFuture.isOpponentInCheck()) {
+                // Reject move as it leaves the king in check
+                continue;
+            }
+            outMoves.add(move);
+        }
+        return outMoves;
     }
 }

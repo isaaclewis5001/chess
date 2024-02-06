@@ -20,7 +20,7 @@ public class ChessGame {
 
     private boolean isCheckmate;
     private boolean hasMoves;
-    private final HashSet<ChessMove> moves;
+    private HashSet<ChessMove> moves;
 
     public ChessGame() {
         pastBoards = new HashMap<>();
@@ -64,11 +64,11 @@ public class ChessGame {
      * Gets a valid moves for a piece at the given location
      *
      * @param startPosition the piece to get valid moves for
-     * @return Set of valid moves for requested piece, or null if no piece at
-     * startPosition
+     * @return Set of valid moves for requested piece.
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        return moves;
+        ChessPiece piece = currentBoard.getPiece(startPosition);
+        return piece.filteredMoves(currentBoard, startPosition);
     }
 
     /**
@@ -182,32 +182,18 @@ public class ChessGame {
 
 
     private void calculateMoves() {
-        moves.clear();
         if (isGameEnd) {
             return;
         }
-        MoveCollection movesNow = new MoveCollection(currentBoard);
-        movesNow.calculateMoves();
-        Collection<ChessMove> candidateMoves = movesNow.getMoves();
+        MoveCollection ownMoves = new MoveCollection(currentBoard);
+        ownMoves.calculateMoves();
+        moves = ownMoves.filteredMoves();
 
         isCheckmate = false;
         isCheck = false;
-        hasMoves = false;
+        hasMoves = !moves.isEmpty();
 
-        for (ChessMove move: candidateMoves) {
-            ChessBoard futureBoard = new ChessBoard(currentBoard);
-            move.makeMove(futureBoard);
-            futureBoard.flipTeam();
 
-            MoveCollection movesFuture = new MoveCollection(futureBoard);
-            movesFuture.calculateMoves();
-            if (movesFuture.isOpponentInCheck()) {
-                // Reject move as it leaves the king in check
-                continue;
-            }
-            hasMoves = true;
-            moves.add(move);
-        }
 
         currentBoard.flipTeam();
         MoveCollection opponentMoves = new MoveCollection(currentBoard);
