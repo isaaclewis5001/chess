@@ -13,21 +13,18 @@ public final class TeamInfo {
         this.castleLong = castleLong;
     }
 
-    public TeamInfo(ChessGame.TeamColor color) {
+    public TeamInfo() {
         this(null, true, true);
-        reset(color);
     }
 
     public TeamInfo(TeamInfo other) {
         this(other.kingSquare, other.castleShort, other.castleLong);
     }
 
-    public void reset(ChessGame.TeamColor color) {
+    public void reset() {
         this.castleShort = true;
         this.castleLong = true;
-
-        int backRank = (color == ChessGame.TeamColor.WHITE) ? 1 : 8;
-        kingSquare = new ChessPosition(backRank, 5);
+        this.kingSquare = null;
     }
 
     public ChessPosition getKingSquare() {

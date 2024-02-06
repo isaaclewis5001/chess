@@ -14,13 +14,12 @@ public class ChessBoard {
     private final TeamInfo whiteTeamInfo;
     private final TeamInfo blackTeamInfo;
     private int enPassantFile;
-
     private ChessGame.TeamColor teamToMove;
 
     public ChessBoard() {
         squares = new ChessPiece[64];
-        whiteTeamInfo = new TeamInfo(ChessGame.TeamColor.WHITE);
-        blackTeamInfo = new TeamInfo(ChessGame.TeamColor.BLACK);
+        whiteTeamInfo = new TeamInfo();
+        blackTeamInfo = new TeamInfo();
         enPassantFile = 0;
         teamToMove = ChessGame.TeamColor.WHITE;
     }
@@ -48,6 +47,10 @@ public class ChessBoard {
      * @param piece    The piece to add.
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
+        ChessPiece previous = squares[position.getIndex()];
+        if (previous != null && previous.getPieceType() == ChessPiece.PieceType.KING) {
+            getTeamInfo(previous.getTeamColor()).setKingSquare(null);
+        }
         squares[position.getIndex()] = piece;
         if (piece != null && piece.getPieceType() == ChessPiece.PieceType.KING) {
             getTeamInfo(piece.getTeamColor()).setKingSquare(position);
@@ -90,8 +93,8 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        whiteTeamInfo.reset(ChessGame.TeamColor.WHITE);
-        blackTeamInfo.reset(ChessGame.TeamColor.BLACK);
+        whiteTeamInfo.reset();
+        blackTeamInfo.reset();
         enPassantFile = 0;
 
 
@@ -109,6 +112,10 @@ public class ChessBoard {
             addPiece(new ChessPosition(7, file), blackPawn);
             addPiece(new ChessPosition(8, file), blackPiece);
         }
+    }
+
+    public void flipTeam() {
+        teamToMove = teamToMove.opponent();
     }
 
     public TeamInfo getTeamInfo(ChessGame.TeamColor color) {

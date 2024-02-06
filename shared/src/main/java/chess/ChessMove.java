@@ -8,7 +8,7 @@ import java.util.Objects;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public final class ChessMove implements GenericChessMove {
+public final class ChessMove {
     ChessPosition startPos;
     ChessPosition endPos;
     ChessPiece.PieceType promotion;
@@ -72,13 +72,20 @@ public final class ChessMove implements GenericChessMove {
         }
     }
 
-    @Override
-    public void makeMove(ChessBoard board) {
+    public boolean makeMove(ChessBoard board) {
         ChessPiece piece = board.getPiece(startPos);
+        boolean isPawn = piece.getPieceType() == ChessPiece.PieceType.PAWN;
         board.addPiece(startPos, null);
         if (promotion != null) {
             piece = new ChessPiece(piece.getTeamColor(), promotion);
         }
+        ChessPiece endPiece = board.getPiece(endPos);
         board.addPiece(endPos, piece);
+        return endPiece != null || isPawn;
     }
+
+    public boolean checksSquare(ChessPosition position) {
+        return endPos.equals(position);
+    }
+
 }

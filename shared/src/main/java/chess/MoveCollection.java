@@ -1,7 +1,7 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 
 /**
@@ -10,14 +10,14 @@ import java.util.HashSet;
 public final class MoveCollection {
     private final ChessBoard board;
 
-    private final HashSet<GenericChessMove> moves;
+    private final ArrayList<ChessMove> moves;
 
     public MoveCollection(ChessBoard board) {
-        moves = new HashSet<>();
+        moves = new ArrayList<>();
         this.board = board;
     }
 
-    public Collection<GenericChessMove> getMoves() {
+    public Collection<ChessMove> getMoves() {
         return moves;
     }
 
@@ -99,7 +99,7 @@ public final class MoveCollection {
         addNormalMove(position, position.getOffset(-2,-1));
     }
 
-    private void addKingMoves(ChessPosition position, boolean considerChecks) {
+    private void addKingMoves(ChessPosition position) {
         addNormalMove(position, position.getOffset(1, 1));
         addNormalMove(position, position.getOffset(0, 1));
         addNormalMove(position, position.getOffset(-1, 1));
@@ -135,7 +135,7 @@ public final class MoveCollection {
      * @param pieceType The type of piece to compute the moves for
      * @param position The starting square of the piece
       */
-    void addPieceMoves(ChessPiece.PieceType pieceType, ChessPosition position, boolean considerChecks) {
+    void addPieceMoves(ChessPiece.PieceType pieceType, ChessPosition position) {
         switch (pieceType) {
             case KNIGHT:
                 addKnightMoves(position);
@@ -150,11 +150,43 @@ public final class MoveCollection {
                 addQueenMoves(position);
                 break;
             case KING:
-                addKingMoves(position, considerChecks);
+                addKingMoves(position);
                 break;
             case PAWN:
                 addPawnMoves(position);
                 break;
         }
+    }
+
+    /**
+     * Calculates all possible moves on the board, not accounting for king safety.
+     */
+    public void calculateMoves() {
+        for (int col = 1; col <= 8; col++) {
+            for (int row = 1; row <= 8; row++) {
+                ChessPosition start = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(start);
+                if (piece != null && piece.getTeamColor() == board.getTeamToMove()) {
+                    addPieceMoves(piece.getPieceType(), start);
+                }
+            }
+        }
+    }
+
+    public boolean isOpponentInCheck() {
+        ChessGame.TeamColor opponentColor = board.getTeamToMove().opponent();
+
+        ChessPosition kingPos = board.getTeamInfo(opponentColor).getKingSquare();
+
+        if (kingPos == null) {
+            return false;
+        }
+
+        for (ChessMove move: moves) {
+            if (move.checksSquare(kingPos)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

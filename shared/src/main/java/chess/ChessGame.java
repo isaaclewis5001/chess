@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -11,16 +12,18 @@ import java.util.HashMap;
  */
 public class ChessGame {
 
-    HashMap<ChessBoard, Integer> pastBoards;
-    ChessBoard currentBoard;
-    int movesSinceCaptureOrPush = 0;
-    boolean isCheck;
-    MoveCollection possibleMoves;
+    private final HashMap<ChessBoard, Integer> pastBoards;
+    private ChessBoard currentBoard;
+    private int movesSinceCaptureOrPush;
+    private boolean isCheck;
+    private boolean isGameEnd;
+    private boolean isCheckmate;
+    private final HashSet<ChessMove> moves;
 
     public ChessGame() {
-        currentBoard = new ChessBoard();
         pastBoards = new HashMap<>();
-        pastBoards.put(currentBoard, 1);
+        moves = new HashSet<>();
+        setBoard(new ChessBoard());
     }
 
     /**
@@ -44,7 +47,14 @@ public class ChessGame {
      */
     public enum TeamColor {
         WHITE,
-        BLACK
+        BLACK;
+
+        public TeamColor opponent() {
+            if (this == WHITE) {
+                return BLACK;
+            }
+            return WHITE;
+        }
     }
 
     /**
@@ -65,7 +75,29 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        if (!moves.contains(move)) {
+            throw new InvalidMoveException();
+        }
+        if (move.makeMove(currentBoard)) {
+            movesSinceCaptureOrPush = 0;
+        }
+        else {
+            movesSinceCaptureOrPush += 1;
+        }
+        currentBoard.flipTeam();
+
+        int timesPlayed = pastBoards.getOrDefault(currentBoard, 0) + 1;
+        pastBoards.put(currentBoard, timesPlayed);
+
+        calculateMoves();
+
+        if (timesPlayed >= 3) {
+            isGameEnd = true;
+            isCheckmate = false;
+        }
+        else if (movesSinceCaptureOrPush >= 40) {
+            isGameEnd = true;
+        }
     }
 
     /**
@@ -75,7 +107,10 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (teamColor == currentBoard.getTeamToMove()) {
+            return isCheck;
+        }
+        return false;
     }
 
     /**
@@ -85,7 +120,10 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (teamColor == currentBoard.getTeamToMove()) {
+            return isCheckmate;
+        }
+        return false;
     }
 
     /**
@@ -96,7 +134,10 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (teamColor == currentBoard.getTeamToMove()) {
+            return isGameEnd && !isCheckmate;
+        }
+        return false;
     }
 
     /**
@@ -105,8 +146,11 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        pastBoards = new HashMap<>();
+        pastBoards.clear();
+        pastBoards.put(board, 1);
         currentBoard = board;
+        movesSinceCaptureOrPush = 0;
+        calculateMoves();
     }
 
     /**
@@ -116,5 +160,43 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return currentBoard;
+    }
+
+
+    private void calculateMoves() {
+        moves.clear();
+
+        MoveCollection movesNow = new MoveCollection(currentBoard);
+        movesNow.calculateMoves();
+        Collection<ChessMove> candidateMoves = movesNow.getMoves();
+
+        isCheckmate = false;
+        isCheck = false;
+        isGameEnd = true;
+
+        for (ChessMove move: candidateMoves) {
+            ChessBoard futureBoard = new ChessBoard(currentBoard);
+            move.makeMove(futureBoard);
+            futureBoard.flipTeam();
+
+            MoveCollection movesFuture = new MoveCollection(futureBoard);
+            movesFuture.calculateMoves();
+            if (movesFuture.isOpponentInCheck()) {
+                System.out.println("Reject " + move);
+                // Reject move as it leaves the king in check
+                continue;
+            }
+            isGameEnd = false;
+            moves.add(move);
+        }
+
+        currentBoard.flipTeam();
+        MoveCollection opponentMoves = new MoveCollection(currentBoard);
+        opponentMoves.calculateMoves();
+        if (opponentMoves.isOpponentInCheck()) {
+            isCheck = true;
+            isCheckmate = isGameEnd;
+        }
+        currentBoard.flipTeam();
     }
 }

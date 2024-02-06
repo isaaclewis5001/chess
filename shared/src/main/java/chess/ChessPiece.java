@@ -58,10 +58,10 @@ public final class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         MoveCollection moveCollection = new MoveCollection(board);
         board.setTeamToMove(pieceColor);
-        moveCollection.addPieceMoves(type, myPosition, false);
+        moveCollection.addPieceMoves(type, myPosition);
 
         HashSet<ChessMove> outMoves = new HashSet<>();
-        for (GenericChessMove move: moveCollection.getMoves()) {
+        for (ChessMove move: moveCollection.getMoves()) {
             if (move instanceof ChessMove normalMove) {
                 outMoves.add(normalMove);
             }
