@@ -48,8 +48,11 @@ public final class MoveCollection {
         if (!newPosition.isOnBoard()) {
             return false;
         }
+        ChessPosition enPassantSquare = new ChessPosition(
+                boardState.getTeamToMove().rankToRow(6), boardState.getEnPassantFile()
+        );
         ChessPiece targetPiece = boardState.getPiece(newPosition);
-        if (isCapture ? canCapture(targetPiece) : targetPiece == null) {
+        if ((isCapture ? canCapture(targetPiece) : targetPiece == null) || newPosition.equals(enPassantSquare)) {
             if (promote) {
                 moves.add(new ChessMove(position, newPosition, ChessPiece.PieceType.BISHOP));
                 moves.add(new ChessMove(position, newPosition, ChessPiece.PieceType.KNIGHT));

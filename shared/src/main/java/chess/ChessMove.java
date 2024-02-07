@@ -93,11 +93,28 @@ public final class ChessMove {
         }
 
         boolean isPawn = piece.getPieceType() == ChessPiece.PieceType.PAWN;
+        ChessPiece endPiece = board.getPiece(endPos);
+
+        // Is this move en passant?
+        if (endPiece == null && isPawn && startPos.getColumn() != endPos.getColumn()) {
+            ChessPosition enPassantSquare = new ChessPosition(startPos.getRow(), endPos.getColumn());
+            board.addPiece(enPassantSquare, null);
+        }
+
+        // Should en passant be allowed next move?
+        int rowDist = endPos.getRow() - startPos.getRow();
+        if (isPawn && (rowDist > 1 || rowDist < -1)) {
+            board.setEnPassantFile(endPos.getColumn());
+        }
+        else {
+            board.setEnPassantFile(0);
+        }
+
+
         board.addPiece(startPos, null);
         if (promotion != null) {
             piece = new ChessPiece(piece.getTeamColor(), promotion);
         }
-        ChessPiece endPiece = board.getPiece(endPos);
         board.addPiece(endPos, piece);
         return endPiece != null || isPawn;
     }
