@@ -1,6 +1,5 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -57,18 +56,18 @@ public final class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        board = new ChessBoard(board);
-        board.setTeamToMove(pieceColor);
-        MoveCollection moveCollection = new MoveCollection(board);
-        moveCollection.addPieceMoves(type, myPosition);
+        BoardState boardState = new BoardState(board);
+        boardState.setTeamToMove(pieceColor);
+        MoveCollection moveCollection = new MoveCollection(boardState);
+        moveCollection.addPieceMoves(type, myPosition, true);
         return new HashSet<>(moveCollection.getMoves());
     }
 
-    public Collection<ChessMove> filteredMoves(ChessBoard board, ChessPosition myPosition) {
-        board = new ChessBoard(board);
+    public Collection<ChessMove> filteredMoves(BoardState board, ChessPosition myPosition) {
+        board = new BoardState(board);
         board.setTeamToMove(pieceColor);
         MoveCollection moveCollection = new MoveCollection(board);
-        moveCollection.addPieceMoves(type, myPosition);
+        moveCollection.addPieceMoves(type, myPosition, false);
         return moveCollection.filteredMoves();
     }
 

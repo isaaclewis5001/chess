@@ -19,6 +19,10 @@ public final class ChessPosition {
         this(toCopy.row, toCopy.column);
     }
 
+    public static ChessPosition FromIndex(int index) {
+        return new ChessPosition((index & 0b00000111) + 1, (index >> 3) + 1);
+    }
+
     /**
      * @return Which row this position is in, with 1
      * coding for the bottom row.

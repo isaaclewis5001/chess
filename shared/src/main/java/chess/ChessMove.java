@@ -9,10 +9,9 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public final class ChessMove {
-    ChessPosition startPos;
-    ChessPosition endPos;
-    ChessPiece.PieceType promotion;
-
+    private final ChessPosition startPos;
+    private final ChessPosition endPos;
+    private final ChessPiece.PieceType promotion;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
@@ -20,6 +19,9 @@ public final class ChessMove {
         this.endPos = endPosition.copy();
         this.promotion = promotionPiece;
     }
+
+
+
 
     /**
      * @return ChessPosition of starting location.
@@ -72,8 +74,24 @@ public final class ChessMove {
         }
     }
 
-    public boolean makeMove(ChessBoard board) {
+    public boolean makeMove(BoardState board) {
         ChessPiece piece = board.getPiece(startPos);
+
+        // Handle castling
+        if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+            // Treat the rook move as a regular move.
+            if (startPos.getColumn() == 5 && endPos.getColumn() == 3) {
+                ChessPosition rookStart = startPos.getOffset(0, -4);
+                ChessPosition rookEnd = startPos.getOffset(0, -1);
+                new ChessMove(rookStart, rookEnd, null).makeMove(board);
+            }
+            if (startPos.getColumn() == 5 && endPos.getColumn() == 7) {
+                ChessPosition rookStart = startPos.getOffset(0, 3);
+                ChessPosition rookEnd = startPos.getOffset(0, 1);
+                new ChessMove(rookStart, rookEnd, null).makeMove(board);
+            }
+        }
+
         boolean isPawn = piece.getPieceType() == ChessPiece.PieceType.PAWN;
         board.addPiece(startPos, null);
         if (promotion != null) {

@@ -12,8 +12,8 @@ import java.util.HashSet;
  */
 public class ChessGame {
 
-    private final HashMap<ChessBoard, Integer> pastBoards;
-    private ChessBoard currentBoard;
+    private final HashMap<BoardState, Integer> pastBoards;
+    private BoardState currentBoard;
     private int movesSinceCaptureOrPush;
     private boolean isCheck;
     private boolean isGameEnd;
@@ -58,6 +58,20 @@ public class ChessGame {
             }
             return WHITE;
         }
+
+        public int rankToRow(int rank) {
+            if (this == WHITE) {
+                return rank;
+            }
+            return 9 - rank;
+        }
+
+        public int direction() {
+            if (this == WHITE) {
+                return 1;
+            }
+            return -1;
+        }
     }
 
     /**
@@ -89,8 +103,9 @@ public class ChessGame {
         }
         currentBoard.flipTeam();
 
-        int timesPlayed = pastBoards.getOrDefault(currentBoard, 0) + 1;
-        pastBoards.put(currentBoard, timesPlayed);
+        BoardState boardCopy = new BoardState(currentBoard);
+        int timesPlayed = pastBoards.getOrDefault(boardCopy, 0) + 1;
+        pastBoards.put(boardCopy, timesPlayed);
 
         calculateMoves();
 
@@ -165,8 +180,8 @@ public class ChessGame {
      */
     public void setBoard(ChessBoard board) {
         pastBoards.clear();
-        pastBoards.put(board, 1);
-        currentBoard = board;
+        currentBoard = new BoardState(board);
+        pastBoards.put(currentBoard, 1);
         movesSinceCaptureOrPush = 0;
         calculateMoves();
     }
@@ -177,7 +192,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        return currentBoard;
+        return currentBoard.getBoard();
     }
 
 
@@ -186,22 +201,11 @@ public class ChessGame {
             return;
         }
         MoveCollection ownMoves = new MoveCollection(currentBoard);
-        ownMoves.calculateMoves();
+        ownMoves.calculateMoves(false);
         moves = ownMoves.filteredMoves();
 
-        isCheckmate = false;
-        isCheck = false;
+        isCheck = ownMoves.isInCheck();
         hasMoves = !moves.isEmpty();
-
-
-
-        currentBoard.flipTeam();
-        MoveCollection opponentMoves = new MoveCollection(currentBoard);
-        opponentMoves.calculateMoves();
-        if (opponentMoves.isOpponentInCheck()) {
-            isCheck = true;
-            isCheckmate = !hasMoves;
-        }
-        currentBoard.flipTeam();
+        isCheckmate = !hasMoves && isCheck;
     }
 }

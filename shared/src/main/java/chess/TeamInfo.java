@@ -12,11 +12,6 @@ public final class TeamInfo {
         this.castleShort = castleShort;
         this.castleLong = castleLong;
     }
-
-    public TeamInfo() {
-        this(null, true, true);
-    }
-
     public TeamInfo(TeamInfo other) {
         this(other.kingSquare, other.castleShort, other.castleLong);
     }
@@ -43,12 +38,12 @@ public final class TeamInfo {
         this.kingSquare = kingSquare;
     }
 
-    public void revokeShortCastle(boolean castleShort) {
-        this.castleShort = castleShort;
+    public void revokeShortCastle() {
+        this.castleShort = false;
     }
 
-    public void revokeLongCastle(boolean castleLong) {
-        this.castleLong = castleLong;
+    public void revokeLongCastle() {
+        this.castleLong = false;
     }
 
     @Override
