@@ -15,11 +15,11 @@ public class MemoryUserDAO implements UserDAO {
     }
 
     @Override
-    public void createUser(UserData data) {
-        if (userData.containsKey(data.username())) {
+    public void createUser(UserData user) {
+        if (userData.containsKey(user.username())) {
             throw new RuntimeException("Username already exists.");
         }
-        userData.put(data.username(), data);
+        userData.put(user.username(), user);
     }
 
     @Override

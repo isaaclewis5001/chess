@@ -33,6 +33,8 @@ public class UserDAOTests {
 
             Assertions.assertEquals(impl.getUserByUsername("alex"), user1);
             Assertions.assertEquals(impl.getUserByUsername("cay"), user3);
+
+            Assertions.assertNull(impl.getUserByUsername("dwight"));
         }
     }
 

@@ -15,11 +15,11 @@ public interface UserDAO {
     UserData getUserByUsername(String username);
 
     /**
-     * Creates a new user with the provided UserData.
-     * @param data The data of the user to create.
-     * @throws RuntimeException Throws when the provided username already exists.
+     * Creates a new user with the provided UserData
+     * @param user Describes the user to create
+     * @throws RuntimeException Throws when the provided username already exists
      */
-    void createUser(UserData data);
+    void createUser(UserData user);
 
     /**
      * Deletes all user data.
