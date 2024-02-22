@@ -1,5 +1,6 @@
 package unitTests.dataAccess;
 
+import dataAccess.DuplicateKeyException;
 import dataAccess.user.MemoryUserDAO;
 import dataAccess.user.UserDAO;
 import model.UserData;
@@ -17,8 +18,8 @@ public class UserDAOTests {
     }
 
     @Test
-    @DisplayName("Recall Users")
-    void recallUsers() {
+    @DisplayName("Recall")
+    void recallUsers() throws Exception {
         UserData user1 = new UserData("alex", "pancakes14", "alex@mail.au");
         UserData user2 = new UserData("betty", "blu3b3rri3s", "betty@hotmail.com");
         UserData user3 = new UserData("cay", "gray_skull2", "the_he_man@gmail.com");
@@ -40,7 +41,7 @@ public class UserDAOTests {
 
     @Test
     @DisplayName("Clear")
-    void clear() {
+    void clear() throws Exception {
         UserData user1 = new UserData("alex", "pancakes14", "alex@mail.au");
         for (UserDAO impl: getImplementors()) {
             impl.createUser(user1);
@@ -51,12 +52,12 @@ public class UserDAOTests {
 
     @Test
     @DisplayName("Handle Duplicate Usernames")
-    void handeDuplicates() {
+    void handeDuplicates() throws Exception {
         UserData user1 = new UserData("alex", "pancakes14", "alex@mail.au");
         UserData user2 = new UserData("alex", "pancakes15", "fakealex@email.gov");
         for (UserDAO impl: getImplementors()) {
             impl.createUser(user1);
-            Assertions.assertThrows(RuntimeException.class, () -> impl.createUser(user2));
+            Assertions.assertThrows(DuplicateKeyException.class, () -> impl.createUser(user2));
         }
     }
 }

@@ -1,5 +1,6 @@
 package dataAccess.user;
 
+import dataAccess.DuplicateKeyException;
 import model.UserData;
 
 import java.util.HashMap;
@@ -15,9 +16,9 @@ public class MemoryUserDAO implements UserDAO {
     }
 
     @Override
-    public void createUser(UserData user) {
+    public void createUser(UserData user) throws DuplicateKeyException {
         if (userData.containsKey(user.username())) {
-            throw new RuntimeException("Username already exists.");
+            throw new DuplicateKeyException("username", user.username());
         }
         userData.put(user.username(), user);
     }

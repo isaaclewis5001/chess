@@ -1,7 +1,11 @@
 package dataAccess.auth;
 
+import dataAccess.DuplicateKeyException;
 import model.AuthData;
 
+/**
+ * Data access interface for auth tokens
+ */
 public interface AuthDAO {
 
     /**
@@ -16,7 +20,7 @@ public interface AuthDAO {
      * @param auth Contains the auth token and user to authorize
      * @throws RuntimeException Throws if the auth token is not unique
      */
-    void addAuth(AuthData auth);
+    void addAuth(AuthData auth) throws DuplicateKeyException;
 
     /**
      * Removes the given auth token so that it may no longer be used, if it exists.

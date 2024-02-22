@@ -1,5 +1,6 @@
 package unitTests.dataAccess;
 
+import dataAccess.DuplicateKeyException;
 import dataAccess.auth.AuthDAO;
 import dataAccess.auth.MemoryAuthDAO;
 import model.AuthData;
@@ -18,7 +19,7 @@ public class AuthDAOTests {
 
     @Test
     @DisplayName("Recall")
-    void recallAuth() {
+    void recallAuth() throws Exception {
         AuthData auth1 = new AuthData("1", "alex");
         AuthData auth2 = new AuthData("2", "betty");
         AuthData auth3 = new AuthData("3", "cay");
@@ -40,7 +41,7 @@ public class AuthDAOTests {
 
     @Test
     @DisplayName("Clear")
-    void clear() {
+    void clear() throws Exception {
         AuthData auth1 = new AuthData("1", "alex");
         for (AuthDAO impl: getImplementors()) {
             impl.addAuth(auth1);
@@ -51,7 +52,7 @@ public class AuthDAOTests {
 
     @Test
     @DisplayName("Remove")
-    void remove() {
+    void remove() throws Exception {
         AuthData auth1 = new AuthData("1", "alex");
         AuthData auth2 = new AuthData("2", "betty");
         for (AuthDAO impl: getImplementors()) {
@@ -65,12 +66,12 @@ public class AuthDAOTests {
 
     @Test
     @DisplayName("Handle Duplicate Tokens")
-    void handeDuplicates() {
+    void handeDuplicates() throws Exception {
         AuthData auth1 = new AuthData("1", "alex");
         AuthData auth2 = new AuthData("1", "dwight");
         for (AuthDAO impl: getImplementors()) {
             impl.addAuth(auth1);
-            Assertions.assertThrows(RuntimeException.class, () -> impl.addAuth(auth2));
+            Assertions.assertThrows(DuplicateKeyException.class, () -> impl.addAuth(auth2));
         }
     }
 }

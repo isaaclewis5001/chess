@@ -1,5 +1,6 @@
 package dataAccess.auth;
 
+import dataAccess.DuplicateKeyException;
 import model.AuthData;
 
 import java.util.HashMap;
@@ -13,9 +14,9 @@ public class MemoryAuthDAO implements AuthDAO {
     }
 
     @Override
-    public void addAuth(AuthData auth) {
+    public void addAuth(AuthData auth) throws DuplicateKeyException {
         if (authDataMap.containsKey(auth.authToken())) {
-            throw new RuntimeException("Auth token was not unique.");
+            throw new DuplicateKeyException("auth token", auth.authToken());
         }
         authDataMap.put(auth.authToken(), auth);
     }

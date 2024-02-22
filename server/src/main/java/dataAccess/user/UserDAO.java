@@ -1,5 +1,6 @@
 package dataAccess.user;
 
+import dataAccess.DuplicateKeyException;
 import model.UserData;
 
 
@@ -17,9 +18,9 @@ public interface UserDAO {
     /**
      * Creates a new user with the provided UserData
      * @param user Describes the user to create
-     * @throws RuntimeException Throws when the provided username already exists
+     * @throws DuplicateKeyException Throws when the provided username already exists
      */
-    void createUser(UserData user);
+    void createUser(UserData user) throws DuplicateKeyException;
 
     /**
      * Deletes all user data.

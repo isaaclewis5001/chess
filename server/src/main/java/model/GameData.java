@@ -8,4 +8,22 @@ public record GameData(
     String blackUsername,
     String gameName,
     ChessGame game
-) {}
+) {
+    public String getPlayerUsername(ChessGame.TeamColor color) {
+        if (color == ChessGame.TeamColor.WHITE) {
+            return whiteUsername;
+        }
+        return blackUsername;
+    }
+
+    public GameData replacePlayer(ChessGame.TeamColor color, String newUsername) {
+        if (color == ChessGame.TeamColor.WHITE) {
+            return new GameData(gameId, newUsername, blackUsername, gameName, game);
+        }
+        return new GameData(gameId, whiteUsername, newUsername, gameName, game);
+    }
+
+    public GameData withoutGameState() {
+        return new GameData(gameId, whiteUsername, blackUsername, gameName, null);
+    }
+}
