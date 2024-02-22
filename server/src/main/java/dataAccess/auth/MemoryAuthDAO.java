@@ -1,6 +1,7 @@
 package dataAccess.auth;
 
 import dataAccess.DuplicateKeyException;
+import dataAccess.MissingKeyException;
 import model.AuthData;
 
 import java.util.HashMap;
@@ -9,8 +10,12 @@ public class MemoryAuthDAO implements AuthDAO {
     private final HashMap<String, AuthData> authDataMap;
 
     @Override
-    public AuthData getAuthUser(String auth) {
-        return authDataMap.get(auth);
+    public AuthData getAuthUser(String auth) throws MissingKeyException {
+        AuthData result = authDataMap.get(auth);
+        if (result == null) {
+            throw new MissingKeyException("username", auth);
+        }
+        return result;
     }
 
     @Override

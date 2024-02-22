@@ -1,6 +1,7 @@
 package dataAccess.user;
 
 import dataAccess.DuplicateKeyException;
+import dataAccess.MissingKeyException;
 import model.UserData;
 
 
@@ -10,10 +11,10 @@ import model.UserData;
 public interface UserDAO {
     /**
      * @param username The username to query
-     * @return The UserData corresponding to the given username, or null
-     * if none can be found.
+     * @return The UserData corresponding to the given username
+     * @throws MissingKeyException When no user with the username exists
      */
-    UserData getUserByUsername(String username);
+    UserData getUserByUsername(String username) throws MissingKeyException;
 
     /**
      * Creates a new user with the provided UserData

@@ -1,6 +1,7 @@
 package unitTests.dataAccess;
 
 import dataAccess.DuplicateKeyException;
+import dataAccess.MissingKeyException;
 import dataAccess.auth.AuthDAO;
 import dataAccess.auth.MemoryAuthDAO;
 import model.AuthData;
@@ -35,7 +36,7 @@ public class AuthDAOTests {
             Assertions.assertEquals(impl.getAuthUser("1"), auth1);
             Assertions.assertEquals(impl.getAuthUser("3"), auth3);
 
-            Assertions.assertNull(impl.getAuthUser("4"));
+            Assertions.assertThrows(MissingKeyException.class, () -> impl.getAuthUser("4"));
         }
     }
 
@@ -46,7 +47,7 @@ public class AuthDAOTests {
         for (AuthDAO impl: getImplementors()) {
             impl.addAuth(auth1);
             impl.clear();
-            Assertions.assertNull(impl.getAuthUser("alex"));
+            Assertions.assertThrows(MissingKeyException.class, () -> impl.getAuthUser("1"));
         }
     }
 
@@ -59,7 +60,7 @@ public class AuthDAOTests {
             impl.addAuth(auth1);
             impl.addAuth(auth2);
             impl.removeAuth("1");
-            Assertions.assertNull(impl.getAuthUser("1"));
+            Assertions.assertThrows(MissingKeyException.class, () -> impl.getAuthUser("1"));
             Assertions.assertNotNull(impl.getAuthUser("2"));
         }
     }

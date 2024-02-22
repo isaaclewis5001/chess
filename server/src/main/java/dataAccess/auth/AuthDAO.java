@@ -1,6 +1,7 @@
 package dataAccess.auth;
 
 import dataAccess.DuplicateKeyException;
+import dataAccess.MissingKeyException;
 import model.AuthData;
 
 /**
@@ -13,7 +14,7 @@ public interface AuthDAO {
      * @return The UserData corresponding to the given username, or null
      * if none can be found.
      */
-    AuthData getAuthUser(String auth);
+    AuthData getAuthUser(String auth) throws MissingKeyException;
 
     /**
      * Adds a new auth token for a user.
