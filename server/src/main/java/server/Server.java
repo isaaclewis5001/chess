@@ -1,5 +1,9 @@
 package server;
 
+import server.bundles.DataAccess;
+import server.bundles.Handlers;
+import server.bundles.MemoryDataAccess;
+import server.bundles.Services;
 import spark.*;
 
 public class Server {
@@ -16,6 +20,7 @@ public class Server {
 
         Spark.delete("/db", handlers.clearHandler()::clear);
         Spark.post("/user", handlers.registrationHandler()::createUser);
+        Spark.post("/session", handlers.sessionHandler()::login);
 
         return Spark.port();
     }

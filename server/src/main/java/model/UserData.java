@@ -1,20 +1,25 @@
 package model;
 
-public record UserData(String username, String password, String email) {
-    public boolean validateFields() {
+import model.validation.Validate;
+import model.validation.ValidationException;
+
+public record UserData(String username, String password, String email) implements Validate {
+    @Override
+    public void validate() throws ValidationException {
         if (
             username == null ||
             password == null ||
             email == null
         ) {
-            return false;
+            throw new ValidationException("Field was missing");
         }
 
-        return !(
+        if (
             username.isEmpty() ||
             password.isEmpty() ||
             email.isEmpty()
-        );
+        ) {
+            throw new ValidationException("Field was empty");
+        }
     }
-
 }

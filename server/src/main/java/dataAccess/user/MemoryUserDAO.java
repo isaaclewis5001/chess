@@ -1,6 +1,7 @@
 package dataAccess.user;
 
 import dataAccess.DuplicateKeyException;
+import dataAccess.MissingKeyException;
 import model.UserData;
 
 import java.util.HashMap;
@@ -11,8 +12,12 @@ import java.util.HashMap;
 public class MemoryUserDAO implements UserDAO {
     private final HashMap<String, UserData> userData;
     @Override
-    public UserData getUserByUsername(String username) {
-        return userData.get(username);
+    public UserData getUserByUsername(String username) throws MissingKeyException {
+        UserData user = userData.get(username);
+        if (user == null) {
+            throw new MissingKeyException("username", username);
+        }
+        return user;
     }
 
     @Override

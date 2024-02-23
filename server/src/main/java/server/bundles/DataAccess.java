@@ -1,4 +1,4 @@
-package server;
+package server.bundles;
 
 import dataAccess.auth.AuthDAO;
 import dataAccess.games.GamesDAO;

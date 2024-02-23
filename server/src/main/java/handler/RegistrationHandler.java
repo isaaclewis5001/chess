@@ -1,32 +1,25 @@
 package handler;
 
-import com.google.gson.Gson;
 import model.AuthData;
 import model.UserData;
 import model.response.ErrorResponse;
+import service.JsonService;
 import service.UserService;
 import spark.Request;
 import spark.Response;
 
 public class RegistrationHandler {
     private final UserService userService;
-    private final Gson gson;
+    private final JsonService jsonService;
 
-    private UserData parseUserData(String json) {
-        UserData userData = gson.fromJson(json, UserData.class);
-        if (!userData.validateFields()) {
-            throw new RuntimeException("Found user data with missing or invalid fields");
-        }
-        return userData;
-    }
 
     public Object createUser(Request request, Response response) {
         UserData userData;
         try {
-            userData = parseUserData(request.body());
+            userData = jsonService.validFromJson(request.body(), UserData.class);
         } catch(Exception ex) {
             response.status(400);
-            return gson.toJson(new ErrorResponse("bad request"));
+            return jsonService.toJson(new ErrorResponse("bad request"));
         }
 
         AuthData authData;
@@ -35,14 +28,14 @@ public class RegistrationHandler {
         }
         catch (UserService.UsernameTakenException ex) {
             response.status(403);
-            return gson.toJson(new ErrorResponse("username already taken"));
+            return jsonService.toJson(new ErrorResponse("username already taken"));
         }
 
-        return gson.toJson(authData);
+        return jsonService.toJson(authData);
     }
 
-    public RegistrationHandler(UserService userService) {
+    public RegistrationHandler(UserService userService, JsonService jsonService) {
         this.userService = userService;
-        gson = new Gson();
+        this.jsonService = jsonService;
     }
 }

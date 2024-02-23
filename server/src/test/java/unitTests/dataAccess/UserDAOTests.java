@@ -1,6 +1,7 @@
 package unitTests.dataAccess;
 
 import dataAccess.DuplicateKeyException;
+import dataAccess.MissingKeyException;
 import dataAccess.user.MemoryUserDAO;
 import dataAccess.user.UserDAO;
 import model.UserData;
@@ -35,7 +36,7 @@ public class UserDAOTests {
             Assertions.assertEquals(impl.getUserByUsername("alex"), user1);
             Assertions.assertEquals(impl.getUserByUsername("cay"), user3);
 
-            Assertions.assertNull(impl.getUserByUsername("dwight"));
+            Assertions.assertThrows(MissingKeyException.class, () -> impl.getUserByUsername("dwight"));
         }
     }
 
@@ -46,7 +47,7 @@ public class UserDAOTests {
         for (UserDAO impl: getImplementors()) {
             impl.createUser(user1);
             impl.clear();
-            Assertions.assertNull(impl.getUserByUsername("alex"));
+            Assertions.assertThrows(MissingKeyException.class, () -> impl.getUserByUsername("alex"));
         }
     }
 
