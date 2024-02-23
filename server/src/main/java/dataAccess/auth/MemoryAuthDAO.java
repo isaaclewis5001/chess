@@ -27,8 +27,10 @@ public class MemoryAuthDAO implements AuthDAO {
     }
 
     @Override
-    public void removeAuth(String authToken) {
-        authDataMap.remove(authToken);
+    public void removeAuth(String authToken) throws MissingKeyException {
+        if (authDataMap.remove(authToken) == null) {
+            throw new MissingKeyException("auth token", authToken);
+        }
     }
 
     @Override

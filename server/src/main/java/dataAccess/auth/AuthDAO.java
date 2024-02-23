@@ -24,10 +24,11 @@ public interface AuthDAO {
     void addAuth(AuthData auth) throws DuplicateKeyException;
 
     /**
-     * Removes the given auth token so that it may no longer be used, if it exists.
+     * Removes the given auth token so that it may no longer be used.
      * @param authToken The auth token to remove
+     * @throws MissingKeyException If the auth token does not exist
      */
-    void removeAuth(String authToken);
+    void removeAuth(String authToken) throws MissingKeyException;
 
     /**
      * Deletes all auth tokens.

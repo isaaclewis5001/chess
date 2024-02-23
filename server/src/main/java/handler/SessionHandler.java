@@ -32,6 +32,22 @@ public class SessionHandler {
         return jsonService.toJson(authData);
     }
 
+    public Object logout(Request request, Response response) {
+        String authToken = request.headers("authorization");
+
+        try {
+            if (authToken == null) {
+                throw new Exception();
+            }
+            userService.logout(authToken);
+        } catch (Exception ex) {
+            response.status(401);
+            return jsonService.toJson(new ErrorResponse("unauthorized"));
+        }
+
+        return "";
+    }
+
     public SessionHandler(UserService userService, JsonService jsonService) {
         this.userService = userService;
         this.jsonService = jsonService;

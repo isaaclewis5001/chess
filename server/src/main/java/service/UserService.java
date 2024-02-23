@@ -35,6 +35,12 @@ public class UserService {
         }
     }
 
+    public static class BadAuthException extends Exception {
+        public BadAuthException() {
+            super("Bad auth token");
+        }
+    }
+
     public AuthData createUser(UserData user) throws UsernameTakenException {
         try {
             userDAO.createUser(user);
@@ -55,8 +61,15 @@ public class UserService {
         if (!user.password().equals(request.password())) {
             throw new BadLoginException();
         }
-
          return createAuthForUser(request.username());
+    }
+
+    public void logout(String authToken) throws BadAuthException {
+        try {
+            authDAO.removeAuth(authToken);
+        } catch (MissingKeyException ex) {
+            throw new BadAuthException();
+        }
     }
 
 
