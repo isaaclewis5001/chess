@@ -3,6 +3,7 @@ package handler;
 import model.AuthData;
 import model.UserData;
 import model.response.ErrorResponse;
+import service.GamesService;
 import service.JsonService;
 import service.UserService;
 import spark.Request;

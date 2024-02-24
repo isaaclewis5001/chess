@@ -36,9 +36,6 @@ public class SessionHandler {
         String authToken = request.headers("authorization");
 
         try {
-            if (authToken == null) {
-                throw new Exception();
-            }
             userService.logout(authToken);
         } catch (Exception ex) {
             response.status(401);

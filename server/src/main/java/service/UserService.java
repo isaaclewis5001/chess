@@ -65,6 +65,9 @@ public class UserService {
     }
 
     public void logout(String authToken) throws BadAuthException {
+        if (authToken == null) {
+            throw new BadAuthException();
+        }
         try {
             authDAO.removeAuth(authToken);
         } catch (MissingKeyException ex) {
@@ -83,6 +86,14 @@ public class UserService {
             throw new RuntimeException("Failed to create a unique UUID as auth token.", ex);
         }
         return authData;
+    }
+
+    public AuthData getAuthUser(String authToken) throws BadAuthException {
+        try {
+            return authDAO.getAuthUser(authToken);
+        } catch(MissingKeyException ex) {
+            throw new BadAuthException();
+        }
     }
 
     public UserService(UserDAO userDAO, AuthDAO authDAO) {

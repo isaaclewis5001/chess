@@ -6,6 +6,7 @@ import dataAccess.DuplicateKeyException;
 import dataAccess.games.GamesDAO;
 import dataAccess.games.MemoryGamesDAO;
 import model.GameData;
+import model.GameDesc;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,13 +49,12 @@ public class GamesDAOTests {
     void listGames() throws Exception {
         GameData game1 = new GameData(1, "alex", "betty", "ab", null);
         GameData game2 = new GameData(2, "betty", "cay", "bc", new ChessGame());
-        GameData game2WithNull = new GameData(2, "betty", "cay", "bc", null);
         GameData game3 = new GameData(3, "alex", "cay", "ac", null);
 
-        HashSet<GameData> expectedSet = new HashSet<>();
-        expectedSet.add(game1);
-        expectedSet.add(game2WithNull);
-        expectedSet.add(game3);
+        HashSet<GameDesc> expectedSet = new HashSet<>();
+        expectedSet.add(game1.desc());
+        expectedSet.add(game2.desc());
+        expectedSet.add(game3.desc());
 
         for (GamesDAO impl: getImplementors()) {
             impl.createGame(game1);

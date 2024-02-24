@@ -5,6 +5,7 @@ import dataAccess.BadUpdateException;
 import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
 import model.GameData;
+import model.GameDesc;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,8 +14,8 @@ public class MemoryGamesDAO implements GamesDAO {
     private final HashMap<Integer, GameData> games;
 
     @Override
-    public Collection<GameData> listGames() {
-        return games.values().stream().map(GameData::withoutGameState).toList();
+    public Collection<GameDesc> listGames() {
+        return games.values().stream().map(GameData::desc).toList();
     }
 
     @Override
@@ -42,7 +43,8 @@ public class MemoryGamesDAO implements GamesDAO {
         if (!oldGame.getPlayerUsername(color).isEmpty()) {
             throw new BadUpdateException("username already present");
         }
-        games.put(gameId, oldGame.replacePlayer(color, username));
+        GameData newGame = oldGame.replacePlayer(color, username);
+        games.put(gameId, newGame);
     }
 
     @Override

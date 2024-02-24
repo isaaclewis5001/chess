@@ -5,6 +5,7 @@ import dataAccess.BadUpdateException;
 import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
 import model.GameData;
+import model.GameDesc;
 
 import java.util.Collection;
 
@@ -14,9 +15,8 @@ import java.util.Collection;
 public interface GamesDAO {
     /**
      * @return All previously created games
-     * @apiNote The GameData returned by this function may have their game field set to null.
      */
-    Collection<GameData> listGames();
+    Collection<GameDesc> listGames();
 
     /**
      * Adds a new game.

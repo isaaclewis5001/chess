@@ -15,7 +15,7 @@ public class Services {
         clearService = new ClearService(dataAccess.auth(), dataAccess.user(), dataAccess.games());
         userService = new UserService(dataAccess.user(), dataAccess.auth());
         jsonService = new JsonService();
-        gamesService = new GamesService();
+        gamesService = new GamesService(dataAccess.games());
     }
 
     public ClearService clearService() {
@@ -28,5 +28,9 @@ public class Services {
 
     public JsonService jsonService() {
         return jsonService;
+    }
+
+    public GamesService gamesService() {
+        return gamesService;
     }
 }

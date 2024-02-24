@@ -23,7 +23,7 @@ public record GameData(
         return new GameData(gameId, whiteUsername, newUsername, gameName, game);
     }
 
-    public GameData withoutGameState() {
-        return new GameData(gameId, whiteUsername, blackUsername, gameName, null);
+    public GameDesc desc() {
+        return new GameDesc(gameId, whiteUsername, blackUsername, gameName);
     }
 }
