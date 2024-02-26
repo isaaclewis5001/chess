@@ -1,8 +1,7 @@
 package handler;
 
-import model.AuthData;
 import model.request.CreateGameRequest;
-import model.response.CreateGameResponse;
+import model.request.JoinGameRequest;
 import model.response.ErrorResponse;
 import model.response.ListGamesResponse;
 import service.GamesService;
@@ -10,8 +9,6 @@ import service.JsonService;
 import service.UserService;
 import spark.Request;
 import spark.Response;
-
-import java.util.Optional;
 
 public class GamesHandler {
     private final UserService userService;
@@ -37,7 +34,7 @@ public class GamesHandler {
     public Object createGame(Request request, Response response) {
         String auth = request.headers("authorization");
         try {
-            userService.getAuthUser(auth).username();
+            userService.getAuthUser(auth);
         } catch (UserService.BadAuthException ex) {
             response.status(401);
             return jsonService.toJson(new ErrorResponse("unauthorized"));
@@ -53,6 +50,37 @@ public class GamesHandler {
         }
 
         return jsonService.toJson(gamesService.createGame(requestBody));
+    }
+
+    public Object joinGame(Request request, Response response) {
+        String auth = request.headers("authorization");
+        String username;
+        try {
+            username = userService.getAuthUser(auth).username();
+        } catch (UserService.BadAuthException ex) {
+            response.status(401);
+            return jsonService.toJson(new ErrorResponse("unauthorized"));
+        }
+
+        JoinGameRequest joinGameRequest;
+        try {
+            joinGameRequest = jsonService.fromJson(request.body(), JoinGameRequest.class);
+        } catch (JsonService.JsonException ex) {
+            response.status(400);
+            return jsonService.toJson(new ErrorResponse("bad request"));
+        }
+
+        try {
+            gamesService.joinGame(joinGameRequest, username);
+        } catch (GamesService.TeamTakenException ex) {
+            response.status(403);
+            return jsonService.toJson(new ErrorResponse("already taken"));
+        } catch (GamesService.BadGameIdException ex) {
+            response.status(400);
+            return jsonService.toJson(new ErrorResponse("bad request"));
+        }
+
+        return "";
     }
 
     public GamesHandler(UserService userService, JsonService jsonService, GamesService gamesService) {

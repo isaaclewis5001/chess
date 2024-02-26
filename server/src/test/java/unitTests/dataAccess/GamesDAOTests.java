@@ -3,6 +3,7 @@ package unitTests.dataAccess;
 import chess.ChessGame;
 import dataAccess.BadUpdateException;
 import dataAccess.DuplicateKeyException;
+import dataAccess.MissingKeyException;
 import dataAccess.games.GamesDAO;
 import dataAccess.games.MemoryGamesDAO;
 import model.GameData;
@@ -40,7 +41,7 @@ public class GamesDAOTests {
             Assertions.assertEquals(game1, impl.fetchGame(1));
             Assertions.assertEquals(game3, impl.fetchGame(3));
 
-            Assertions.assertNull(impl.fetchGame(4));
+            Assertions.assertThrows(MissingKeyException.class, () -> impl.fetchGame(4));
         }
     }
 
@@ -72,7 +73,7 @@ public class GamesDAOTests {
         for (GamesDAO impl: getImplementors()) {
             impl.createGame(game1);
             impl.clear();
-            Assertions.assertNull(impl.fetchGame(1));
+            Assertions.assertThrows(MissingKeyException.class, () -> impl.fetchGame(1));
             Assertions.assertTrue(impl.listGames().isEmpty());
         }
     }
@@ -82,19 +83,25 @@ public class GamesDAOTests {
     void remove() throws Exception {
         GameData game1 = new GameData(1, "alex", "betty", "ab", null);
         GameData game2 = new GameData(2, "betty", "cay", "bc", null);
+
+        HashSet<GameDesc> expectedSet = new HashSet<>();
+        expectedSet.add(game2.desc());
         for (GamesDAO impl: getImplementors()) {
             impl.createGame(game1);
             impl.createGame(game2);
             impl.removeGame(1);
-            Assertions.assertNull(impl.fetchGame(1));
-            Assertions.assertNotNull(impl.fetchGame(2));
+
+            Assertions.assertThrows(MissingKeyException.class, () -> impl.fetchGame(1));
+            Assertions.assertEquals(game2, impl.fetchGame(2));
+
+            Assertions.assertEquals(expectedSet, new HashSet<>(impl.listGames()));
         }
     }
 
     @Test
     @DisplayName("Join Game")
     void joinGame() throws Exception {
-        GameData game1 = new GameData(1, "", "", "ab", null);
+        GameData game1 = new GameData(1, null, null, "ab", null);
         GameData game1Result = new GameData(1, "alex", "betty", "ab", null);
         for (GamesDAO impl: getImplementors()) {
             impl.createGame(game1);
@@ -107,7 +114,7 @@ public class GamesDAOTests {
     @Test
     @DisplayName("Team Already Taken")
     void teamTaken() throws Exception {
-        GameData game1 = new GameData(1, "", "", "jumanji", null);
+        GameData game1 = new GameData(1, null, null, "jumanji", null);
         for (GamesDAO impl: getImplementors()) {
             impl.createGame(game1);
 

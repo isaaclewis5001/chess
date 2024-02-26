@@ -35,12 +35,9 @@ public class MemoryGamesDAO implements GamesDAO {
     public void updateGameParticipants(int gameId, ChessGame.TeamColor color, String username)
         throws MissingKeyException, BadUpdateException {
 
-        GameData oldGame = games.get(gameId);
-        if (oldGame == null) {
-            throw new MissingKeyException("game ID", String.valueOf(gameId));
-        }
+        GameData oldGame = fetchGame(gameId);
 
-        if (!oldGame.getPlayerUsername(color).isEmpty()) {
+        if (oldGame.getPlayerUsername(color) != null) {
             throw new BadUpdateException("username already present");
         }
         GameData newGame = oldGame.replacePlayer(color, username);
@@ -48,8 +45,12 @@ public class MemoryGamesDAO implements GamesDAO {
     }
 
     @Override
-    public GameData fetchGame(int gameId) {
-        return games.get(gameId);
+    public GameData fetchGame(int gameId) throws MissingKeyException {
+        GameData result = games.get(gameId);
+        if (result == null) {
+            throw new MissingKeyException("game ID", String.valueOf(gameId));
+        }
+        return result;
     }
 
     @Override

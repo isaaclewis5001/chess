@@ -1,5 +1,5 @@
 package model;
 
-public record GameDesc(int gameId, String whiteUsername, String blackUsername, String gameName) {
+public record GameDesc(int gameID, String whiteUsername, String blackUsername, String gameName) {
 
 }

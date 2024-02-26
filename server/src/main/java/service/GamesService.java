@@ -1,6 +1,5 @@
 package service;
 
-import chess.ChessGame;
 import dataAccess.BadUpdateException;
 import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
@@ -38,7 +37,7 @@ public class GamesService {
             }
 
             String gameName = request.gameName();
-            GameData gameData = new GameData(gameId, "", "", gameName, null);
+            GameData gameData = new GameData(gameId, null, null, gameName, null);
             try {
                 gamesDAO.createGame(gameData);
             } catch (DuplicateKeyException ex) {
@@ -67,6 +66,9 @@ public class GamesService {
         try {
             if (request.playerColor() != null) {
                 gamesDAO.updateGameParticipants(request.gameID(), request.playerColor(), username);
+            }
+            else {
+                gamesDAO.fetchGame(request.gameID());
             }
         } catch (MissingKeyException ex) {
             throw new BadGameIdException(ex);
