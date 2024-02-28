@@ -26,12 +26,6 @@ public interface GamesDAO {
     void createGame(GameData gameData) throws DuplicateKeyException;
 
     /**
-     * Removes a game by its ID.
-     * @param gameId The ID of the game to remove
-     */
-    void removeGame(int gameId);
-
-    /**
      * Adds a player as a participant in a game.
      * @param gameId The ID of the game to modify
      * @param color The team to add the player to

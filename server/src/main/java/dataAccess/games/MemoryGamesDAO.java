@@ -27,11 +27,6 @@ public class MemoryGamesDAO implements GamesDAO {
     }
 
     @Override
-    public void removeGame(int gameId) {
-        games.remove(gameId);
-    }
-
-    @Override
     public void updateGameParticipants(int gameId, ChessGame.TeamColor color, String username)
         throws MissingKeyException, BadUpdateException {
 

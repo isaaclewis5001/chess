@@ -79,26 +79,6 @@ public class GamesDAOTests {
     }
 
     @Test
-    @DisplayName("Remove")
-    void remove() throws Exception {
-        GameData game1 = new GameData(1, "alex", "betty", "ab", null);
-        GameData game2 = new GameData(2, "betty", "cay", "bc", null);
-
-        HashSet<GameDesc> expectedSet = new HashSet<>();
-        expectedSet.add(game2.desc());
-        for (GamesDAO impl: getImplementors()) {
-            impl.createGame(game1);
-            impl.createGame(game2);
-            impl.removeGame(1);
-
-            Assertions.assertThrows(MissingKeyException.class, () -> impl.fetchGame(1));
-            Assertions.assertEquals(game2, impl.fetchGame(2));
-
-            Assertions.assertEquals(expectedSet, new HashSet<>(impl.listGames()));
-        }
-    }
-
-    @Test
     @DisplayName("Join Game")
     void joinGame() throws Exception {
         GameData game1 = new GameData(1, null, null, "ab", null);
