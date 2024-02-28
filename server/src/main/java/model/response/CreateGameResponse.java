@@ -1,4 +1,4 @@
 package model.response;
 
-public record CreateGameResponse(long gameID) {
+public record CreateGameResponse(int gameID) {
 }
