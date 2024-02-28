@@ -131,14 +131,14 @@ public final class MoveCollection {
                 if (info.canCastleLong() &&
                         boardState.getBoard().isRowEmpty(position.getOffset(0, -3), 3) &&
                         rook.equals(boardState.getPiece(longRookPos)) &&
-                        !DoMovesCheckSquare(opponentMoves, position.getOffset(0, -1))
+                        !doMovesCheckSquare(opponentMoves, position.getOffset(0, -1))
                 ) {
                     moves.add(new ChessMove(position, position.getOffset(0, -2), null));
                 }
                 if (info.canCastleShort() &&
                         boardState.getBoard().isRowEmpty(position.getOffset(0, 1), 2) &&
                         rook.equals(boardState.getPiece(shortRookPos)) &&
-                        !DoMovesCheckSquare(opponentMoves, position.getOffset(0, 1))
+                        !doMovesCheckSquare(opponentMoves, position.getOffset(0, 1))
                 ) {
                     moves.add(new ChessMove(position, position.getOffset(0, 2), null));
                 }
@@ -215,7 +215,7 @@ public final class MoveCollection {
         }
     }
 
-    private static boolean DoMovesCheckSquare(ArrayList<ChessMove> moves, ChessPosition pos) {
+    private static boolean doMovesCheckSquare(ArrayList<ChessMove> moves, ChessPosition pos) {
         if (pos == null) {
             return false;
         }
@@ -230,7 +230,7 @@ public final class MoveCollection {
     public boolean isOpponentInCheck() {
         ChessGame.TeamColor opponentColor = boardState.getTeamToMove().opponent();
         ChessPosition kingPos = boardState.getTeamInfo(opponentColor).getKingSquare();
-        return DoMovesCheckSquare(moves, kingPos);
+        return doMovesCheckSquare(moves, kingPos);
     }
 
     public boolean isInCheck() {
@@ -239,7 +239,7 @@ public final class MoveCollection {
         ChessGame.TeamColor team = boardState.getTeamToMove();
         ChessPosition kingPos = boardState.getTeamInfo(team).getKingSquare();
 
-        return DoMovesCheckSquare(opponentMoves, kingPos);
+        return doMovesCheckSquare(opponentMoves, kingPos);
     }
 
     public HashSet<ChessMove> filteredMoves() {

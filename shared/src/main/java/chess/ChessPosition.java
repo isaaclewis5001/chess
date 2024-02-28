@@ -19,7 +19,7 @@ public final class ChessPosition {
         this(toCopy.row, toCopy.column);
     }
 
-    public static ChessPosition FromIndex(int index) {
+    public static ChessPosition fromIndex(int index) {
         return new ChessPosition((index & 0b00000111) + 1, (index >> 3) + 1);
     }
 
@@ -53,11 +53,11 @@ public final class ChessPosition {
     /**
      * Applies a translation to this position.
      * @return The translated position.
-     * @param row_off How far to translate forward.
-     * @param col_off How for to translate rightwards.
+     * @param rowOff How far to translate forward.
+     * @param colOff How for to translate rightwards.
      */
-    public ChessPosition getOffset(int row_off, int col_off) {
-        return new ChessPosition(row + row_off, column + col_off);
+    public ChessPosition getOffset(int rowOff, int colOff) {
+        return new ChessPosition(row + rowOff, column + colOff);
     }
 
     public ChessPosition copy() {

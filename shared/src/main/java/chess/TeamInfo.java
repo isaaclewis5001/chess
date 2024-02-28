@@ -16,12 +16,6 @@ public final class TeamInfo {
         this(other.kingSquare, other.castleShort, other.castleLong);
     }
 
-    public void reset() {
-        this.castleShort = true;
-        this.castleLong = true;
-        this.kingSquare = null;
-    }
-
     public ChessPosition getKingSquare() {
         return kingSquare;
     }

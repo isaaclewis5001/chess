@@ -3,6 +3,7 @@ package chess;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.function.Function;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -118,6 +119,18 @@ public class ChessGame {
         }
     }
 
+    private<R> R computeMaybeFlipped(TeamColor teamColor, Function<ChessGame, R> func) {
+        boolean wrongColor = teamColor != currentBoard.getTeamToMove();
+        if (wrongColor) {
+            setTeamTurn(teamColor);
+        }
+        R out = func.apply(this);
+        if (wrongColor) {
+            setTeamTurn(teamColor.opponent());
+        }
+        return out;
+    }
+
     /**
      * Determines if the given team is in check
      *
@@ -125,15 +138,9 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        boolean wrongColor = teamColor != currentBoard.getTeamToMove();
-        if (wrongColor) {
-            setTeamTurn(teamColor);
-        }
-        boolean out = isCheck;
-        if (wrongColor) {
-            setTeamTurn(teamColor.opponent());
-        }
-        return out;
+        return computeMaybeFlipped(teamColor, (ChessGame maybeFlipped) ->
+            maybeFlipped.isCheck
+        );
     }
 
     /**
@@ -143,15 +150,9 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        boolean wrongColor = teamColor != currentBoard.getTeamToMove();
-        if (wrongColor) {
-            setTeamTurn(teamColor);
-        }
-        boolean out = isCheckmate;
-        if (wrongColor) {
-            setTeamTurn(teamColor.opponent());
-        }
-        return out;
+        return computeMaybeFlipped(teamColor, (ChessGame maybeFlipped) ->
+            maybeFlipped.isCheckmate
+        );
     }
 
     /**

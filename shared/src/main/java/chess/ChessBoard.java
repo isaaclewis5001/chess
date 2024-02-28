@@ -103,7 +103,7 @@ public class ChessBoard {
         ChessPiece king = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
         for (int i = 0; i < 64; i++) {
             if (king.equals(squares[i])) {
-                return ChessPosition.FromIndex(i);
+                return ChessPosition.fromIndex(i);
             }
         }
         return null;
