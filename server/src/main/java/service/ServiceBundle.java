@@ -1,21 +1,18 @@
-package server.bundles;
+package service;
 
-import service.ClearService;
-import service.GamesService;
-import service.JsonService;
-import service.UserService;
+import dataAccess.bundles.DataAccessBundle;
 
-public class Services {
+public class ServiceBundle {
     private final ClearService clearService;
     private final GamesService gamesService;
     private final JsonService jsonService;
     private final UserService userService;
 
-    public Services(DataAccess dataAccess) {
-        clearService = new ClearService(dataAccess.auth(), dataAccess.user(), dataAccess.games());
-        userService = new UserService(dataAccess.user(), dataAccess.auth());
+    public ServiceBundle(DataAccessBundle dataAccessBundle) {
+        clearService = new ClearService(dataAccessBundle.auth(), dataAccessBundle.user(), dataAccessBundle.games());
+        userService = new UserService(dataAccessBundle.user(), dataAccessBundle.auth());
         jsonService = new JsonService();
-        gamesService = new GamesService(dataAccess.games());
+        gamesService = new GamesService(dataAccessBundle.games());
     }
 
     public ClearService clearService() {

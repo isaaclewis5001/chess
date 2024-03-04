@@ -1,13 +1,13 @@
 package server;
 
-import server.bundles.DataAccess;
-import server.bundles.Handlers;
-import server.bundles.MemoryDataAccess;
-import server.bundles.Services;
+import dataAccess.bundles.DataAccessBundle;
+import handler.HandlerBundle;
+import dataAccess.bundles.MemoryDataAccessBundle;
+import service.ServiceBundle;
 import spark.*;
 
 public class Server {
-    private final Handlers handlers;
+    private final HandlerBundle handlerBundle;
 
 
     public int run(int desiredPort) {
@@ -18,13 +18,13 @@ public class Server {
         Spark.init();
         Spark.awaitInitialization();
 
-        Spark.delete("/db", handlers.clearHandler()::clear);
-        Spark.post("/user", handlers.registrationHandler()::createUser);
-        Spark.post("/session", handlers.sessionHandler()::login);
-        Spark.delete("/session", handlers.sessionHandler()::logout);
-        Spark.get("/game", handlers.gamesHandler()::listGames);
-        Spark.post("/game", handlers.gamesHandler()::createGame);
-        Spark.put("/game", handlers.gamesHandler()::joinGame);
+        Spark.delete("/db", handlerBundle.clearHandler()::clear);
+        Spark.post("/user", handlerBundle.registrationHandler()::createUser);
+        Spark.post("/session", handlerBundle.sessionHandler()::login);
+        Spark.delete("/session", handlerBundle.sessionHandler()::logout);
+        Spark.get("/game", handlerBundle.gamesHandler()::listGames);
+        Spark.post("/game", handlerBundle.gamesHandler()::createGame);
+        Spark.put("/game", handlerBundle.gamesHandler()::joinGame);
 
         return Spark.port();
     }
@@ -35,8 +35,8 @@ public class Server {
     }
 
     public Server() {
-        DataAccess dataAccess = new MemoryDataAccess();
-        Services services = new Services(dataAccess);
-        this.handlers = new Handlers(services);
+        DataAccessBundle dataAccessBundle = new MemoryDataAccessBundle();
+        ServiceBundle serviceBundle = new ServiceBundle(dataAccessBundle);
+        this.handlerBundle = new HandlerBundle(serviceBundle);
     }
 }
