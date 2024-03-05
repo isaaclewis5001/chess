@@ -1,9 +1,9 @@
 package handler;
 
+import dataAccess.DatabaseException;
 import model.AuthData;
-import model.UserData;
+import model.request.CreateUserRequest;
 import model.response.ErrorResponse;
-import service.GamesService;
 import service.JsonService;
 import service.UserService;
 import spark.Request;
@@ -15,9 +15,9 @@ public class RegistrationHandler {
 
 
     public Object createUser(Request request, Response response) {
-        UserData userData;
+        CreateUserRequest createUserRequest;
         try {
-            userData = jsonService.validFromJson(request.body(), UserData.class);
+            createUserRequest = jsonService.validFromJson(request.body(), CreateUserRequest.class);
         } catch(Exception ex) {
             response.status(400);
             return jsonService.toJson(new ErrorResponse("bad request"));
@@ -25,11 +25,15 @@ public class RegistrationHandler {
 
         AuthData authData;
         try {
-            authData = userService.createUser(userData);
+            authData = userService.createUser(createUserRequest);
         }
         catch (UserService.UsernameTakenException ex) {
             response.status(403);
             return jsonService.toJson(new ErrorResponse("username already taken"));
+        }
+        catch (DatabaseException ex) {
+            response.status(500);
+            return jsonService.toJson(new ErrorResponse("internal error"));
         }
 
         return jsonService.toJson(authData);

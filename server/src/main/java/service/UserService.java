@@ -1,12 +1,15 @@
 package service;
 
+import dataAccess.DatabaseException;
 import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
 import dataAccess.auth.AuthDAO;
 import dataAccess.user.UserDAO;
 import model.AuthData;
 import model.UserData;
+import model.request.CreateUserRequest;
 import model.request.LoginRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.UUID;
 import java.util.logging.Level;
@@ -15,6 +18,8 @@ import java.util.logging.Logger;
 public class UserService {
     private final UserDAO userDAO;
     private final AuthDAO authDAO;
+
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public static class UsernameTakenException extends Exception {
         public UsernameTakenException() {
@@ -41,16 +46,17 @@ public class UserService {
         }
     }
 
-    public AuthData createUser(UserData user) throws UsernameTakenException {
+    public AuthData createUser(CreateUserRequest createUserRequest) throws UsernameTakenException, DatabaseException {
+        UserData userData = new UserData(createUserRequest, passwordEncoder);
         try {
-            userDAO.createUser(user);
+            userDAO.createUser(userData);
         } catch (DuplicateKeyException ex) {
             throw new UsernameTakenException(ex);
         }
-        return createAuthForUser(user.username());
+        return createAuthForUser(userData.username());
     }
 
-    public AuthData login(LoginRequest request) throws BadLoginException {
+    public AuthData login(LoginRequest request) throws BadLoginException, DatabaseException {
         UserData user;
         try {
             user = userDAO.getUserByUsername(request.username());
@@ -58,7 +64,7 @@ public class UserService {
             throw new BadLoginException(ex);
         }
 
-        if (!user.password().equals(request.password())) {
+        if (!user.passwordMatches(request.password(), passwordEncoder)) {
             throw new BadLoginException();
         }
          return createAuthForUser(request.username());
@@ -99,5 +105,6 @@ public class UserService {
     public UserService(UserDAO userDAO, AuthDAO authDAO) {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 }

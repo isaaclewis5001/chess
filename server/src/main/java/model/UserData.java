@@ -1,25 +1,18 @@
 package model;
 
-import model.validation.Validate;
-import model.validation.ValidationException;
+import model.request.CreateUserRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-public record UserData(String username, String password, String email) implements Validate {
-    @Override
-    public void validate() throws ValidationException {
-        if (
-            username == null ||
-            password == null ||
-            email == null
-        ) {
-            throw new ValidationException("Field was missing");
-        }
+public record UserData(String username, String hashedPassword, String email) {
+    public UserData(CreateUserRequest createUserRequest, BCryptPasswordEncoder encoder) {
+        this(
+            createUserRequest.username(),
+            encoder.encode(createUserRequest.password()),
+            createUserRequest.email()
+        );
+    }
 
-        if (
-            username.isEmpty() ||
-            password.isEmpty() ||
-            email.isEmpty()
-        ) {
-            throw new ValidationException("Field was empty");
-        }
+    public boolean passwordMatches(String password, BCryptPasswordEncoder encoder) {
+        return encoder.matches(password, hashedPassword);
     }
 }

@@ -1,5 +1,6 @@
 package handler;
 
+import dataAccess.DatabaseException;
 import model.AuthData;
 import model.request.LoginRequest;
 import model.response.ErrorResponse;
@@ -27,6 +28,9 @@ public class SessionHandler {
         } catch (UserService.BadLoginException ex) {
             response.status(401);
             return jsonService.toJson(new ErrorResponse("unauthorized"));
+        } catch (DatabaseException ex) {
+            response.status(500);
+            return jsonService.toJson(new ErrorResponse("internal error"));
         }
 
         return jsonService.toJson(authData);

@@ -5,6 +5,7 @@ import dataAccess.auth.MemoryAuthDAO;
 import dataAccess.user.MemoryUserDAO;
 import model.AuthData;
 import model.UserData;
+import model.request.CreateUserRequest;
 import model.request.LoginRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,9 +15,9 @@ import service.UserService;
 
 @DisplayName("User Service Tests")
 public class UserServiceTests {
-    private static final UserData user1 = new UserData("shauna", "ice_cream_with_jimmies2", "shauna@byu.edu");
-    private static final UserData user1Alt = new UserData("shauna", "jimmy-less", "shauna@irs.gov");
-    private static final UserData user2 = new UserData("bob", "just_bobbin_along", "bob@byu.edu");
+    private static final CreateUserRequest user1 = new CreateUserRequest("shauna", "ice_cream_with_jimmies2", "shauna@byu.edu");
+    private static final CreateUserRequest user1Alt = new CreateUserRequest("shauna", "jimmy-less", "shauna@irs.gov");
+    private static final CreateUserRequest user2 = new CreateUserRequest("bob", "just_bobbin_along", "bob@byu.edu");
     private UserService createService() {
         return new UserService(new MemoryUserDAO(), new MemoryAuthDAO());
     }

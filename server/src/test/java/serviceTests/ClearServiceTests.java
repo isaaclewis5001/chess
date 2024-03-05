@@ -1,8 +1,8 @@
 package serviceTests;
 
 import model.AuthData;
-import model.UserData;
 import model.request.CreateGameRequest;
+import model.request.CreateUserRequest;
 import model.request.JoinGameRequest;
 import model.request.LoginRequest;
 import org.junit.jupiter.api.Assertions;
@@ -29,7 +29,7 @@ public class ClearServiceTests {
     public void clear() throws Exception {
         setup();
 
-        AuthData auth = serviceBundle.userService().createUser(new UserData("a", "b", "c"));
+        AuthData auth = serviceBundle.userService().createUser(new CreateUserRequest("a", "b", "c"));
         int game = serviceBundle.gamesService().createGame(new CreateGameRequest("game")).gameID();
 
         serviceBundle.clearService().clear();
