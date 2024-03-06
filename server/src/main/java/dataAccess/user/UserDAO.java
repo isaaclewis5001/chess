@@ -27,5 +27,5 @@ public interface UserDAO {
     /**
      * Deletes all user data.
      */
-    void clear();
+    void clear() throws DatabaseException;
 }

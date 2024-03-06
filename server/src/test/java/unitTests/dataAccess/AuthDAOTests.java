@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class AuthDAOTests {
     static AuthDAO[] getImplementors() {
         return new AuthDAO[] {
-                new MemoryAuthDAO()
+                new MemoryAuthDAO(),
         };
     }
 

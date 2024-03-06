@@ -1,7 +1,7 @@
 package dataAccess;
 
 /**
- * Indicates there was an error connecting to the database
+ * Indicates there was an error during a data access operation
  */
 public class DataAccessException extends Exception {
     public DataAccessException(String message) {

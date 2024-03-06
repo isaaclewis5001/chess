@@ -1,5 +1,6 @@
 package service;
 
+import dataAccess.DatabaseException;
 import dataAccess.auth.AuthDAO;
 import dataAccess.games.GamesDAO;
 import dataAccess.user.UserDAO;
@@ -8,7 +9,7 @@ public class ClearService {
     private final AuthDAO auth;
     private final UserDAO users;
     private final GamesDAO games;
-    public void clear() {
+    public void clear() throws DatabaseException {
         auth.clear();
         users.clear();
         games.clear();
