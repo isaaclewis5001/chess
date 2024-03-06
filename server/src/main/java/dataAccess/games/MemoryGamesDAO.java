@@ -2,50 +2,47 @@ package dataAccess.games;
 
 import chess.ChessGame;
 import dataAccess.BadUpdateException;
-import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
 import model.GameData;
 import model.GameDesc;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 
 public class MemoryGamesDAO implements GamesDAO {
-    private final HashMap<Integer, GameData> games;
+    private final ArrayList<GameData> games;
 
     @Override
     public Collection<GameDesc> listGames() {
-        return games.values().stream().map(GameData::desc).toList();
+        return games.stream().map(GameData::desc).toList();
     }
 
     @Override
-    public void createGame(GameData gameData) throws DuplicateKeyException {
-        if (games.containsKey(gameData.gameId())) {
-            throw new DuplicateKeyException("game ID", String.valueOf(gameData.gameId()));
-        }
-        games.put(gameData.gameId(), gameData);
+    public int createGame(String gameName) {
+        int newId = games.size();
+        games.add(new GameData(newId, null, null, gameName, null));
+        return newId;
     }
 
     @Override
     public void updateGameParticipants(int gameId, ChessGame.TeamColor color, String username)
         throws MissingKeyException, BadUpdateException {
 
-        GameData oldGame = fetchGame(gameId);
+        if (!gameExists(gameId)) {
+            throw new MissingKeyException("gameId", String.valueOf(gameId));
+        }
+        GameData oldGame = games.get(gameId);
 
         if (oldGame.getPlayerUsername(color) != null) {
             throw new BadUpdateException("username already present");
         }
         GameData newGame = oldGame.replacePlayer(color, username);
-        games.put(gameId, newGame);
+        games.set(gameId, newGame);
     }
 
     @Override
-    public GameData fetchGame(int gameId) throws MissingKeyException {
-        GameData result = games.get(gameId);
-        if (result == null) {
-            throw new MissingKeyException("game ID", String.valueOf(gameId));
-        }
-        return result;
+    public boolean gameExists(int gameId) {
+        return gameId < games.size();
     }
 
     @Override
@@ -54,6 +51,6 @@ public class MemoryGamesDAO implements GamesDAO {
     }
 
     public MemoryGamesDAO() {
-        games = new HashMap<>();
+        games = new ArrayList<>();
     }
 }

@@ -19,7 +19,7 @@ public class GamesServiceTests {
         service = new GamesService(new MemoryGamesDAO());
     }
 
-    private int createGame(String name) {
+    private int createGame(String name) throws Exception {
         return service.createGame(new CreateGameRequest(name)).gameID();
     }
 
@@ -28,7 +28,7 @@ public class GamesServiceTests {
     }
     @Test
     @DisplayName("List Games")
-    public void listGames() {
+    public void listGames() throws Exception {
         createService();
 
         int game1 = createGame("my game");
@@ -120,7 +120,7 @@ public class GamesServiceTests {
 
     @Test
     @DisplayName("Join Bad Game")
-    public void joinBadGame() {
+    public void joinBadGame() throws Exception {
         createService();
 
         int game = createGame("game");
@@ -134,7 +134,7 @@ public class GamesServiceTests {
     }
     @Test
     @DisplayName("Watch Bad Game")
-    public void watchBadGame() {
+    public void watchBadGame() throws Exception {
         createService();
 
         int game = createGame("game");
