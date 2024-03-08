@@ -2,14 +2,14 @@ package dataAccess.bundles;
 
 import dataAccess.DatabaseException;
 import dataAccess.auth.AuthDAO;
-import dataAccess.auth.MemoryAuthDAO;
+import dataAccess.auth.SQLAuthDAO;
 import dataAccess.games.GamesDAO;
 import dataAccess.games.SQLGamesDAO;
 import dataAccess.user.SQLUserDAO;
 import dataAccess.user.UserDAO;
 public class SQLDataAccessBundle implements DataAccessBundle {
     private final SQLUserDAO userDAO;
-    private final MemoryAuthDAO authDAO;
+    private final SQLAuthDAO authDAO;
     private final SQLGamesDAO gamesDAO;
 
     @Override
@@ -27,9 +27,13 @@ public class SQLDataAccessBundle implements DataAccessBundle {
         return gamesDAO;
     }
 
-    public SQLDataAccessBundle() throws DatabaseException {
-        userDAO = new SQLUserDAO();
-        authDAO = new MemoryAuthDAO();
-        gamesDAO = new SQLGamesDAO();
+    public SQLDataAccessBundle() {
+        try {
+            userDAO = new SQLUserDAO();
+            authDAO = new SQLAuthDAO();
+            gamesDAO = new SQLGamesDAO();
+        } catch (DatabaseException ex) {
+            throw new RuntimeException("Failed to connect to the database.");
+        }
     }
 }

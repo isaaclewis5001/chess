@@ -1,10 +1,11 @@
 package server;
 
 import dataAccess.bundles.DataAccessBundle;
+import dataAccess.bundles.SQLDataAccessBundle;
 import handler.HandlerBundle;
-import dataAccess.bundles.MemoryDataAccessBundle;
 import service.ServiceBundle;
 import spark.*;
+
 
 public class Server {
     private final HandlerBundle handlerBundle;
@@ -34,9 +35,12 @@ public class Server {
         Spark.awaitStop();
     }
 
-    public Server() {
-        DataAccessBundle dataAccessBundle = new MemoryDataAccessBundle();
+    public Server(DataAccessBundle dataAccessBundle) {
         ServiceBundle serviceBundle = new ServiceBundle(dataAccessBundle);
         this.handlerBundle = new HandlerBundle(serviceBundle);
+    }
+
+    public Server() {
+        this(new SQLDataAccessBundle());
     }
 }

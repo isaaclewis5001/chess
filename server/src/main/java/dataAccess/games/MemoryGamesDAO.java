@@ -19,7 +19,7 @@ public class MemoryGamesDAO implements GamesDAO {
 
     @Override
     public int createGame(String gameName) {
-        int newId = games.size();
+        int newId = games.size() + 1;
         games.add(new GameData(newId, null, null, gameName, null));
         return newId;
     }
@@ -31,18 +31,18 @@ public class MemoryGamesDAO implements GamesDAO {
         if (!gameExists(gameId)) {
             throw new MissingKeyException("gameId", String.valueOf(gameId));
         }
-        GameData oldGame = games.get(gameId);
+        GameData oldGame = games.get(gameId - 1);
 
         if (oldGame.getPlayerUsername(color) != null) {
             throw new BadUpdateException("username already present");
         }
         GameData newGame = oldGame.replacePlayer(color, username);
-        games.set(gameId, newGame);
+        games.set(gameId - 1, newGame);
     }
 
     @Override
     public boolean gameExists(int gameId) {
-        return gameId < games.size();
+        return gameId <= games.size() && gameId > 0;
     }
 
     @Override
