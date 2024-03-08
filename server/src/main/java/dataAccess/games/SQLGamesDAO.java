@@ -41,17 +41,15 @@ public class SQLGamesDAO implements GamesDAO {
     public int createGame(String gameName) throws DatabaseException {
         try (Connection connection = DatabaseManager.getConnection()) {
             PreparedStatement statement = connection.prepareStatement((
-                "BEGIN" +
-                "   INSERT INTO gamesDesc (gameName) VALUES (?);" +
-                "   SELECT LAST_INSERT_ID();" +
-                "END"
-            ));
+                "INSERT INTO gamesDesc (gameName) VALUES (?);"
+            ), PreparedStatement.RETURN_GENERATED_KEYS);
             statement.setString(1, gameName);
-            ResultSet results = statement.executeQuery();
-            if (!results.next()) {
+            statement.executeUpdate();
+            ResultSet keyResults = statement.getGeneratedKeys();
+            if (!keyResults.next()) {
                 throw new DatabaseException("Query did not return auto incremented id");
             }
-            return results.getInt(1);
+            return keyResults.getInt(1);
         }
         catch (SQLException exception) {
             throw new DatabaseException(exception.getMessage());
@@ -126,11 +124,10 @@ public class SQLGamesDAO implements GamesDAO {
         try (Connection connection = DatabaseManager.getConnection()) {
             PreparedStatement statement = connection.prepareStatement((
                 "CREATE TABLE IF NOT EXISTS gamesDesc (" +
-                "   gameId int NOT NULL AUTO INCREMENT," +
+                "   gameId int NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                 "   whiteUsername VARCHAR(64)," +
                 "   blackUsername VARCHAR(64)," +
                 "   gameName VARCHAR(64) NOT NULL" +
-                "   PRIMARY KEY (gameId)" +
                 ");"
             ));
             statement.execute();
