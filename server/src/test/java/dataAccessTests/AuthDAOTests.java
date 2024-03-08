@@ -1,4 +1,4 @@
-package unitTests.dataAccess;
+package dataAccessTests;
 
 import dataAccess.DatabaseException;
 import dataAccess.DuplicateKeyException;

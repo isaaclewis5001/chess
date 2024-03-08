@@ -1,4 +1,4 @@
-package unitTests.dataAccess;
+package dataAccessTests;
 
 import chess.ChessGame;
 import dataAccess.BadUpdateException;
