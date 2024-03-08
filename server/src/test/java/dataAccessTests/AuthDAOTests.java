@@ -1,6 +1,7 @@
 package dataAccessTests;
 
 import dataAccess.DatabaseException;
+import dataAccess.DatabaseManager;
 import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
 import dataAccess.auth.AuthDAO;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Auth DAO Tests")
 public class AuthDAOTests {
     static AuthDAO[] getImplementors() throws DatabaseException {
+        DatabaseManager.createDatabase();
         return new AuthDAO[] {
             new MemoryAuthDAO(),
             new SQLAuthDAO(),

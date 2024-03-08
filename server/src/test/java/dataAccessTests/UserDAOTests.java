@@ -1,5 +1,6 @@
 package dataAccessTests;
 
+import dataAccess.DatabaseManager;
 import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
 import dataAccess.user.MemoryUserDAO;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("User DAO Tests")
 public class UserDAOTests {
     static UserDAO[] getImplementors() throws Exception {
+        DatabaseManager.createDatabase();
         return new UserDAO[] {
                 new MemoryUserDAO(),
                 new SQLUserDAO()

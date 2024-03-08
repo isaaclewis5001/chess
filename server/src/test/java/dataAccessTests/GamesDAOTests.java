@@ -3,6 +3,7 @@ package dataAccessTests;
 import chess.ChessGame;
 import dataAccess.BadUpdateException;
 import dataAccess.DatabaseException;
+import dataAccess.DatabaseManager;
 import dataAccess.MissingKeyException;
 import dataAccess.games.GamesDAO;
 import dataAccess.games.MemoryGamesDAO;
@@ -18,6 +19,7 @@ import java.util.HashSet;
 @DisplayName("Games DAO Tests")
 public class GamesDAOTests {
     static GamesDAO[] getImplementors() throws DatabaseException {
+        DatabaseManager.createDatabase();
         return new GamesDAO[] {
                 new MemoryGamesDAO(),
                 new SQLGamesDAO(),

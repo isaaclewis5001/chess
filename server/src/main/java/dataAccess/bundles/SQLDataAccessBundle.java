@@ -1,6 +1,7 @@
 package dataAccess.bundles;
 
 import dataAccess.DatabaseException;
+import dataAccess.DatabaseManager;
 import dataAccess.auth.AuthDAO;
 import dataAccess.auth.SQLAuthDAO;
 import dataAccess.games.GamesDAO;
@@ -29,6 +30,7 @@ public class SQLDataAccessBundle implements DataAccessBundle {
 
     public SQLDataAccessBundle() {
         try {
+            DatabaseManager.createDatabase();
             userDAO = new SQLUserDAO();
             authDAO = new SQLAuthDAO();
             gamesDAO = new SQLGamesDAO();
