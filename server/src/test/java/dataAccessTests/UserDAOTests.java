@@ -40,6 +40,21 @@ public class UserDAOTests {
 
             Assertions.assertEquals(impl.getUserByUsername("alex"), user1);
             Assertions.assertEquals(impl.getUserByUsername("cay"), user3);
+        }
+    }
+
+    @Test
+    @DisplayName("Recall Missing User")
+    void recallMissingUser() throws Exception {
+        UserData user1 = new UserData("alex", "pancakes14", "alex@mail.au");
+        UserData user2 = new UserData("betty", "blu3b3rri3s", "betty@hotmail.com");
+        UserData user3 = new UserData("cay", "gray_skull2", "the_he_man@gmail.com");
+        for (UserDAO impl: getImplementors()) {
+            impl.clear();
+
+            impl.createUser(user1);
+            impl.createUser(user2);
+            impl.createUser(user3);
 
             Assertions.assertThrows(MissingKeyException.class, () -> impl.getUserByUsername("dwight"));
         }

@@ -125,6 +125,16 @@ public class GamesDAOTests {
             int id1 = impl.createGame("Game 1");
 
             Assertions.assertTrue(impl.gameExists(id1));
+        }
+    }
+
+    @DisplayName("Game Not Exists")
+    @Test
+    public void gameNotExists() throws Exception {
+        for (GamesDAO impl: getImplementors()) {
+            impl.clear();
+            int id1 = impl.createGame("Game 1");
+
             Assertions.assertFalse(impl.gameExists(id1 + 1));
         }
     }

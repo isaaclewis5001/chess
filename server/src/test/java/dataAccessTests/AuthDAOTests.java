@@ -41,6 +41,21 @@ public class AuthDAOTests {
 
             Assertions.assertEquals(impl.getAuthUser("1"), auth1);
             Assertions.assertEquals(impl.getAuthUser("3"), auth3);
+        }
+    }
+
+    @Test
+    @DisplayName("Recall Missing")
+    void recallMissingAuth() throws Exception {
+        AuthData auth1 = new AuthData("1", "alex");
+        AuthData auth2 = new AuthData("2", "betty");
+        AuthData auth3 = new AuthData("3", "cay");
+        for (AuthDAO impl: getImplementors()) {
+            impl.clear();
+
+            impl.addAuth(auth1);
+            impl.addAuth(auth2);
+            impl.addAuth(auth3);
 
             Assertions.assertThrows(MissingKeyException.class, () -> impl.getAuthUser("4"));
         }
@@ -70,6 +85,17 @@ public class AuthDAOTests {
             impl.removeAuth("1");
             Assertions.assertThrows(MissingKeyException.class, () -> impl.getAuthUser("1"));
             Assertions.assertNotNull(impl.getAuthUser("2"));
+        }
+    }
+
+    @Test
+    @DisplayName("Remove Missing")
+    void removeMissing() throws Exception {
+        AuthData auth1 = new AuthData("1", "alex");
+        for (AuthDAO impl: getImplementors()) {
+            impl.clear();
+            impl.addAuth(auth1);
+            Assertions.assertThrows(MissingKeyException.class, () -> impl.removeAuth("2"));
         }
     }
 
