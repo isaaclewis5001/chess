@@ -1,6 +1,7 @@
 package unitTests.dataAccess;
 
 import chess.ChessGame;
+import dataAccess.BadUpdateException;
 import dataAccess.DatabaseException;
 import dataAccess.MissingKeyException;
 import dataAccess.games.GamesDAO;
@@ -91,6 +92,51 @@ public class GamesDAOTests {
             Assertions.assertThrows(MissingKeyException.class,
                 () -> impl.updateGameParticipants(id1 + 1, ChessGame.TeamColor.BLACK, "forrest")
             );
+        }
+    }
+
+    @DisplayName("Team Taken")
+    @Test
+    public void teamTaken() throws Exception {
+        for (GamesDAO impl: getImplementors()) {
+            impl.clear();
+            int id1 = impl.createGame("Game 1");
+
+            impl.updateGameParticipants(id1, ChessGame.TeamColor.WHITE, "w");
+            impl.updateGameParticipants(id1, ChessGame.TeamColor.BLACK, "b");
+
+            Assertions.assertThrows(BadUpdateException.class,
+                () -> impl.updateGameParticipants(id1, ChessGame.TeamColor.WHITE, "w2")
+            );
+
+            Assertions.assertThrows(BadUpdateException.class,
+                () -> impl.updateGameParticipants(id1, ChessGame.TeamColor.BLACK, "b2")
+            );
+        }
+    }
+
+    @DisplayName("Game Exists")
+    @Test
+    public void gameExists() throws Exception {
+        for (GamesDAO impl: getImplementors()) {
+            impl.clear();
+            int id1 = impl.createGame("Game 1");
+
+            Assertions.assertTrue(impl.gameExists(id1));
+            Assertions.assertFalse(impl.gameExists(id1 + 1));
+        }
+    }
+
+    @DisplayName("Clear")
+    @Test
+    public void clear() throws Exception {
+        for (GamesDAO impl: getImplementors()) {
+            impl.clear();
+            int id1 = impl.createGame("Game 1");
+
+            impl.clear();
+            Assertions.assertTrue(impl.listGames().isEmpty());
+            Assertions.assertFalse(impl.gameExists(id1));
         }
     }
 }
