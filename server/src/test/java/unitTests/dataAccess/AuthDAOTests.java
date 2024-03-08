@@ -1,9 +1,11 @@
 package unitTests.dataAccess;
 
+import dataAccess.DatabaseException;
 import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
 import dataAccess.auth.AuthDAO;
 import dataAccess.auth.MemoryAuthDAO;
+import dataAccess.auth.SQLAuthDAO;
 import model.AuthData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -12,9 +14,10 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("Auth DAO Tests")
 public class AuthDAOTests {
-    static AuthDAO[] getImplementors() {
+    static AuthDAO[] getImplementors() throws DatabaseException {
         return new AuthDAO[] {
-                new MemoryAuthDAO(),
+            new MemoryAuthDAO(),
+            new SQLAuthDAO(),
         };
     }
 
@@ -25,6 +28,7 @@ public class AuthDAOTests {
         AuthData auth2 = new AuthData("2", "betty");
         AuthData auth3 = new AuthData("3", "cay");
         for (AuthDAO impl: getImplementors()) {
+            impl.clear();
             impl.addAuth(auth1);
             impl.addAuth(auth2);
 
@@ -45,6 +49,7 @@ public class AuthDAOTests {
     void clear() throws Exception {
         AuthData auth1 = new AuthData("1", "alex");
         for (AuthDAO impl: getImplementors()) {
+            impl.clear();
             impl.addAuth(auth1);
             impl.clear();
             Assertions.assertThrows(MissingKeyException.class, () -> impl.getAuthUser("1"));
@@ -57,6 +62,7 @@ public class AuthDAOTests {
         AuthData auth1 = new AuthData("1", "alex");
         AuthData auth2 = new AuthData("2", "betty");
         for (AuthDAO impl: getImplementors()) {
+            impl.clear();
             impl.addAuth(auth1);
             impl.addAuth(auth2);
             impl.removeAuth("1");
@@ -71,6 +77,7 @@ public class AuthDAOTests {
         AuthData auth1 = new AuthData("1", "alex");
         AuthData auth2 = new AuthData("1", "dwight");
         for (AuthDAO impl: getImplementors()) {
+            impl.clear();
             impl.addAuth(auth1);
             Assertions.assertThrows(DuplicateKeyException.class, () -> impl.addAuth(auth2));
         }

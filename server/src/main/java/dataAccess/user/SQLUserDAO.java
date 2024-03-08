@@ -34,7 +34,7 @@ public class SQLUserDAO implements UserDAO {
     public void createUser(UserData user) throws DuplicateKeyException, DatabaseException {
         try (Connection connection = DatabaseManager.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "INSERT IGNORE INTO registeredUsers (username, hashedPassword, email) VALUES (?, ?, ?)"
+                "INSERT IGNORE INTO registeredUsers (username, hashedPassword, email) VALUES (?, ?, ?)"
             );
             statement.setString(1, user.username());
             statement.setString(2, user.hashedPassword());

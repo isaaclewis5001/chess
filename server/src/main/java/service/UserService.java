@@ -22,9 +22,6 @@ public class UserService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     public static class UsernameTakenException extends Exception {
-        public UsernameTakenException() {
-            this(null);
-        }
 
         public UsernameTakenException(Throwable cause) {
             super("Username already taken", cause);
@@ -70,7 +67,7 @@ public class UserService {
          return createAuthForUser(request.username());
     }
 
-    public void logout(String authToken) throws BadAuthException {
+    public void logout(String authToken) throws BadAuthException, DatabaseException {
         if (authToken == null) {
             throw new BadAuthException();
         }
@@ -82,7 +79,7 @@ public class UserService {
     }
 
 
-    private AuthData createAuthForUser(String username) {
+    private AuthData createAuthForUser(String username) throws DatabaseException {
         String authToken = UUID.randomUUID().toString();
         AuthData authData = new AuthData(authToken, username);
         try {
@@ -94,7 +91,7 @@ public class UserService {
         return authData;
     }
 
-    public AuthData getAuthUser(String authToken) throws BadAuthException {
+    public AuthData getAuthUser(String authToken) throws BadAuthException, DatabaseException {
         try {
             return authDAO.getAuthUser(authToken);
         } catch(MissingKeyException ex) {
