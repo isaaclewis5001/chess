@@ -62,16 +62,12 @@ public class SQLGamesDAO implements GamesDAO {
             PreparedStatement statement;
             if (color == ChessGame.TeamColor.WHITE) {
                 statement = connection.prepareStatement((
-                    "BEGIN" +
-                    "   UPDATE gamesDesc SET whiteUsername = ? WHERE gameId = ? AND whiteUsername IS NULL" +
-                    "END"
+                    "UPDATE gamesDesc SET whiteUsername = ? WHERE gameId = ? AND whiteUsername IS NULL"
                 ));
             }
             else {
                 statement = connection.prepareStatement((
-                    "BEGIN" +
-                    "   UPDATE gamesDesc SET blackUsername = ? WHERE gameId = ? AND blackUsername IS NULL" +
-                    "END"
+                    "UPDATE gamesDesc SET blackUsername = ? WHERE gameId = ? AND blackUsername IS NULL"
                 ));
             }
             statement.setString(1, username);
@@ -79,7 +75,7 @@ public class SQLGamesDAO implements GamesDAO {
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated == 0) {
                 if (gameExists(gameId)) {
-                    throw new BadUpdateException("Team taken");
+                    throw new BadUpdateException("team taken");
                 }
                 else {
                     throw new MissingKeyException("gameId", String.valueOf(gameId));
@@ -95,7 +91,7 @@ public class SQLGamesDAO implements GamesDAO {
     public boolean gameExists(int gameId) throws DatabaseException {
         try (Connection connection = DatabaseManager.getConnection()) {
             PreparedStatement statement = connection.prepareStatement((
-                "SELECT FROM gamesDesc WHERE gameId = ?;"
+                "SELECT NULL FROM gamesDesc WHERE gameId = ?;"
             ));
             statement.setInt(1, gameId);
             ResultSet results = statement.executeQuery();

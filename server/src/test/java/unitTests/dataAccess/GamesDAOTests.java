@@ -2,6 +2,7 @@ package unitTests.dataAccess;
 
 import chess.ChessGame;
 import dataAccess.DatabaseException;
+import dataAccess.MissingKeyException;
 import dataAccess.games.GamesDAO;
 import dataAccess.games.MemoryGamesDAO;
 import dataAccess.games.SQLGamesDAO;
@@ -77,6 +78,19 @@ public class GamesDAOTests {
             expectedSet.add(new GameDesc(id4, "w", "b", "Game 4"));
 
             Assertions.assertEquals(expectedSet, actualSet);
+        }
+    }
+
+    @DisplayName("Join Game Bad ID")
+    @Test
+    public void joinGameBadId() throws Exception {
+        for (GamesDAO impl: getImplementors()) {
+            impl.clear();
+            int id1 = impl.createGame("Game 1");
+
+            Assertions.assertThrows(MissingKeyException.class,
+                () -> impl.updateGameParticipants(id1 + 1, ChessGame.TeamColor.BLACK, "forrest")
+            );
         }
     }
 }
