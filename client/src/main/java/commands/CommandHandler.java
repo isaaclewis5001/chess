@@ -39,11 +39,11 @@ public class CommandHandler {
     }
 
     public void handle(AppState state, String command, String[] args) throws UnknownCommandException, BadContextException, BadArgsException {
-        CommandEndpoint endpoint =  map.get(command).endpoint();
-        if (endpoint == null) {
+        Command commandObject =  map.get(command);
+        if (commandObject == null) {
             throw new UnknownCommandException();
         }
-        endpoint.handle(state, args);
+        commandObject.endpoint().handle(state, args);
     }
 
     public Command getCommand(String name) {

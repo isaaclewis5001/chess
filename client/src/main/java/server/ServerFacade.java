@@ -3,6 +3,8 @@ package server;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import model.data.AuthData;
+import model.request.CreateGameRequest;
+import model.request.CreateUserRequest;
 import model.request.LoginRequest;
 import state.LoginState;
 
@@ -13,11 +15,15 @@ import java.net.URI;
 import java.net.URL;
 
 public class ServerFacade {
+    private final URL userURL;
     private final URL sessionURL;
+    private final URL gamesURL;
     private final Gson gson;
 
     public ServerFacade(String serverURL) throws IOException {
+        this.userURL = URI.create(serverURL + "/user").toURL();
         this.sessionURL = URI.create(serverURL + "/session").toURL();
+        this.gamesURL = URI.create(serverURL + "/games").toURL();
         this.gson = new Gson();
     }
 
@@ -83,6 +89,39 @@ public class ServerFacade {
             return code == 200;
         } catch (Exception ex) {
             return false;
+        }
+    }
+
+    public LoginState register(String username, String password, String email) throws IOException, ServerException, UsernameInUseException {
+        HttpURLConnection connection = getConnection(userURL, "POST");
+
+        CreateUserRequest request = new CreateUserRequest(username, password, email);
+
+        int code = execute(connection, request);
+
+        if (code == 200) {
+            AuthData authData = interpretResponseBody(connection, AuthData.class);
+            return new LoginState(authData.username(), authData.authToken());
+        }
+        else if (code == 403) {
+            throw new UsernameInUseException();
+        }
+        else {
+            throw generalFailure(code);
+        }
+    }
+
+    public void createGame(LoginState loginState, String name) throws IOException, ServerException, UnauthorizedException {
+        HttpURLConnection connection = getConnection(gamesURL, "POST");
+        insertAuthInfo(connection, loginState);
+
+        CreateGameRequest request = new CreateGameRequest(name);
+        int code = execute(connection, request);
+        if (code == 401) {
+            throw new UnauthorizedException();
+        }
+        else if (code != 200) {
+            throw generalFailure(code);
         }
     }
 

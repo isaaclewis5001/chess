@@ -19,7 +19,7 @@ public class LoginCmd implements CommandEndpoint {
 
     @Override
     public String getDescription() {
-        return "attempts to log in to the server with the provided credentials.";
+        return "Attempts to log in to the server with the provided credentials.";
     }
 
     @Override
@@ -32,17 +32,14 @@ public class LoginCmd implements CommandEndpoint {
         }
         try {
             state.loginState = state.serverFacade.login(inputs[0], inputs[1]);
+            System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + "Logged in successfully!");
         } catch (IOException ex) {
             CommonMessages.issueConnecting();
-            return;
         } catch (ServerException ex) {
             CommonMessages.serverException(ex);
-            return;
         } catch (LoginException ex) {
             System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Invalid login credentials.");
         }
-
-        System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + "Logged in successfully!");
     }
 
     @Override

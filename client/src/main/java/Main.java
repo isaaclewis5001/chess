@@ -4,6 +4,7 @@ import commands.general.HelpCmd;
 import commands.general.QuitCmd;
 import commands.session.LoginCmd;
 import commands.session.LogoutCmd;
+import commands.session.RegisterCmd;
 import driver.AppDriver;
 import server.ServerFacade;
 import state.AppState;
@@ -15,6 +16,7 @@ public class Main {
         CommandHandler handler = new CommandHandler();
         handler.add(new Command(new String[] {"help", "h", "?"}, new HelpCmd()));
         handler.add(new Command(new String[] {"quit", "exit"}, new QuitCmd()));
+        handler.add(new Command(new String[] {"register"}, new RegisterCmd()));
         handler.add(new Command(new String[] {"login"}, new LoginCmd()));
         handler.add(new Command(new String[] {"logout"}, new LogoutCmd()));
 
