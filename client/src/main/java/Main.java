@@ -1,6 +1,7 @@
 import commands.Command;
 import commands.CommandHandler;
 import commands.games.CreateGameCmd;
+import commands.games.JoinGameCmd;
 import commands.games.ListGamesCmd;
 import commands.general.HelpCmd;
 import commands.general.QuitCmd;
@@ -23,6 +24,8 @@ public class Main {
         handler.add(new Command(new String[] {"logout"}, new LogoutCmd()));
         handler.add(new Command(new String[] {"newgame"}, new CreateGameCmd()));
         handler.add(new Command(new String[] {"listgames"}, new ListGamesCmd()));
+        handler.add(new Command(new String[] {"join"}, new JoinGameCmd(true)));
+        handler.add(new Command(new String[] {"watch"}, new JoinGameCmd(false)));
         return handler;
     }
 

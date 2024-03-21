@@ -6,6 +6,7 @@ import server.ServerException;
 import server.UnauthorizedException;
 import state.AppState;
 import ui.CommonMessages;
+import ui.EscapeSequences;
 
 import java.io.IOException;
 
@@ -33,7 +34,7 @@ public class CreateGameCmd implements CommandEndpoint {
         }
         try {
             state.serverFacade.createGame(state.loginState, inputs[0]);
-            System.out.println("Game created successfully!");
+            System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + "Game created successfully!");
         } catch (IOException ex) {
             CommonMessages.issueConnecting();
         } catch (ServerException ex) {

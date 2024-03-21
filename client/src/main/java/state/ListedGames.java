@@ -20,22 +20,22 @@ public class ListedGames {
             output.append(listNumber);
             output.append(". ");
             output.append(game.gameName());
-            output.append(EscapeSequences.SET_TEXT_COLOR_WHITE + "\n");
+            output.append(EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + "\n");
             if (game.whiteUsername() != null) {
-                output.append("    ");
+                output.append("    " + EscapeSequences.SET_TEXT_COLOR_GREEN);
                 output.append(game.whiteUsername());
-                output.append(" as white\n");
+                output.append(EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + " as white\n");
             }
             else {
-                output.append("   white available\n");
+                output.append("    white available\n");
             }
             if (game.blackUsername() != null) {
-                output.append("    ");
+                output.append("    " + EscapeSequences.SET_TEXT_COLOR_GREEN);
                 output.append(game.blackUsername());
-                output.append(" as black\n");
+                output.append(EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY + " as black\n");
             }
             else {
-                output.append("   black available\n");
+                output.append("    black available\n");
             }
             listNumber++;
         }

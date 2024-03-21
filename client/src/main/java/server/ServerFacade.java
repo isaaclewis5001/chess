@@ -1,11 +1,13 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import model.data.AuthData;
 import model.data.GameDesc;
 import model.request.CreateGameRequest;
 import model.request.CreateUserRequest;
+import model.request.JoinGameRequest;
 import model.request.LoginRequest;
 import model.response.ListGamesResponse;
 import state.LoginState;
@@ -144,4 +146,23 @@ public class ServerFacade {
         }
     }
 
+    public void joinGame(LoginState loginState, int gameId, ChessGame.TeamColor team)
+            throws IOException, ServerException, UnauthorizedException, TeamTakenException, BadGameIdException {
+        HttpURLConnection connection = getConnection(gamesURL, "PUT");
+        insertAuthInfo(connection, loginState);
+
+        int code = execute(connection, new JoinGameRequest(gameId, team));
+        if (code == 401) {
+            throw new UnauthorizedException();
+        }
+        else if (code == 403) {
+            throw new TeamTakenException();
+        }
+        else if (code == 400) {
+            throw new BadGameIdException();
+        }
+        else if (code != 200) {
+            throw generalFailure(code);
+        }
+    }
 }

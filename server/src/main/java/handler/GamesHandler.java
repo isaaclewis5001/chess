@@ -89,7 +89,7 @@ public class GamesHandler {
                 return jsonService.toJson(new ErrorResponse("already taken"));
             } catch (GamesService.BadGameIdException ex) {
                 response.status(400);
-                return jsonService.toJson(new ErrorResponse("bad request"));
+                return jsonService.toJson(new ErrorResponse("bad game id"));
             }
 
             return "";

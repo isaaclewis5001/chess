@@ -17,6 +17,7 @@ public class AppDriver implements Runnable {
     public void run() {
         Scanner input = new Scanner(System.in);
         while(!state.shouldQuit()) {
+            System.out.print(EscapeSequences.SET_TEXT_COLOR_BLUE + "[Chess] " + EscapeSequences.SET_TEXT_COLOR_WHITE + "$ ");
             String command = input.nextLine();
             String[] words = command.split(" ");
             if (words.length == 0) {
