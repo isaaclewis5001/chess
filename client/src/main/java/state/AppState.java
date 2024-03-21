@@ -8,6 +8,8 @@ public class AppState {
     public final ServerFacade serverFacade;
     public LoginState loginState;
 
+    public ListedGames gamesList;
+
     private boolean quit;
 
     public void quit() {
@@ -19,5 +21,7 @@ public class AppState {
     public AppState(CommandHandler handler, ServerFacade serverFacade) {
         this.handler = handler;
         this.serverFacade = serverFacade;
+        this.gamesList = null;
+        this.loginState = null;
     }
 }

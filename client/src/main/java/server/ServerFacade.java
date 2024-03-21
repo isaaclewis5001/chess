@@ -3,9 +3,11 @@ package server;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import model.data.AuthData;
+import model.data.GameDesc;
 import model.request.CreateGameRequest;
 import model.request.CreateUserRequest;
 import model.request.LoginRequest;
+import model.response.ListGamesResponse;
 import state.LoginState;
 
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.util.List;
 
 public class ServerFacade {
     private final URL userURL;
@@ -125,5 +128,20 @@ public class ServerFacade {
         }
     }
 
+    public List<GameDesc> listGames(LoginState loginState) throws IOException, ServerException, UnauthorizedException {
+        HttpURLConnection connection = getConnection(gamesURL, "GET");
+        insertAuthInfo(connection, loginState);
+
+        int code = execute(connection);
+        if (code == 200) {
+            return interpretResponseBody(connection, ListGamesResponse.class).games();
+        }
+        else if (code == 401) {
+            throw new UnauthorizedException();
+        }
+        else {
+            throw generalFailure(code);
+        }
+    }
 
 }

@@ -9,11 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class SQLGamesDAO implements GamesDAO {
     @Override
-    public Collection<GameDesc> listGames() throws DatabaseException {
+    public List<GameDesc> listGames() throws DatabaseException {
         try (Connection connection = DatabaseManager.getConnection()) {
             PreparedStatement statement = connection.prepareStatement((
                     "SELECT gameId, whiteUsername, blackUsername, gameName FROM gamesDesc"

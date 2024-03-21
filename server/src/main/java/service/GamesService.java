@@ -9,13 +9,13 @@ import model.request.CreateGameRequest;
 import model.request.JoinGameRequest;
 import model.response.CreateGameResponse;
 
-import java.util.Collection;
+import java.util.List;
 
 public class GamesService {
 
     private final GamesDAO gamesDAO;
 
-    public Collection<GameDesc> listGames() throws DatabaseException {
+    public List<GameDesc> listGames() throws DatabaseException {
         return gamesDAO.listGames();
     }
 

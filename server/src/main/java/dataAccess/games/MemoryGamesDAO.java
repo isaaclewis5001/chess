@@ -7,13 +7,13 @@ import model.GameData;
 import model.data.GameDesc;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class MemoryGamesDAO implements GamesDAO {
     private final ArrayList<GameData> games;
 
     @Override
-    public Collection<GameDesc> listGames() {
+    public List<GameDesc> listGames() {
         return games.stream().map(GameData::desc).toList();
     }
 

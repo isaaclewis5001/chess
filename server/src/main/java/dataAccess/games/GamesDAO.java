@@ -6,7 +6,7 @@ import dataAccess.DatabaseException;
 import dataAccess.MissingKeyException;
 import model.data.GameDesc;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Data access interface for games
@@ -15,7 +15,7 @@ public interface GamesDAO {
     /**
      * @return All previously created games
      */
-    Collection<GameDesc> listGames() throws DatabaseException;
+    List<GameDesc> listGames() throws DatabaseException;
 
     /**
      * Adds a new game.

@@ -3,6 +3,6 @@ package model.response;
 
 import model.data.GameDesc;
 
-import java.util.Collection;
+import java.util.List;
 
-public record ListGamesResponse(Collection<GameDesc> games) {}
+public record ListGamesResponse(List<GameDesc> games) {}

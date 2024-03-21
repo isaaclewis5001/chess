@@ -1,6 +1,7 @@
 import commands.Command;
 import commands.CommandHandler;
 import commands.games.CreateGameCmd;
+import commands.games.ListGamesCmd;
 import commands.general.HelpCmd;
 import commands.general.QuitCmd;
 import commands.session.LoginCmd;
@@ -21,6 +22,7 @@ public class Main {
         handler.add(new Command(new String[] {"login"}, new LoginCmd()));
         handler.add(new Command(new String[] {"logout"}, new LogoutCmd()));
         handler.add(new Command(new String[] {"newgame"}, new CreateGameCmd()));
+        handler.add(new Command(new String[] {"listgames"}, new ListGamesCmd()));
         return handler;
     }
 
