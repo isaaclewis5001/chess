@@ -33,6 +33,7 @@ public class CreateGameCmd implements CommandEndpoint {
         }
         try {
             state.serverFacade.createGame(state.loginState, inputs[0]);
+            System.out.println("Game created successfully!");
         } catch (IOException ex) {
             CommonMessages.issueConnecting();
         } catch (ServerException ex) {

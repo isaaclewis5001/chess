@@ -1,5 +1,6 @@
 import commands.Command;
 import commands.CommandHandler;
+import commands.games.CreateGameCmd;
 import commands.general.HelpCmd;
 import commands.general.QuitCmd;
 import commands.session.LoginCmd;
@@ -12,13 +13,19 @@ import state.AppState;
 import java.io.IOException;
 
 public class Main {
-    public static void main(String[] args) {
+    public static CommandHandler createHandler() {
         CommandHandler handler = new CommandHandler();
         handler.add(new Command(new String[] {"help", "h", "?"}, new HelpCmd()));
         handler.add(new Command(new String[] {"quit", "exit"}, new QuitCmd()));
         handler.add(new Command(new String[] {"register"}, new RegisterCmd()));
         handler.add(new Command(new String[] {"login"}, new LoginCmd()));
         handler.add(new Command(new String[] {"logout"}, new LogoutCmd()));
+        handler.add(new Command(new String[] {"newgame"}, new CreateGameCmd()));
+        return handler;
+    }
+
+    public static void main(String[] args) {
+        CommandHandler handler = createHandler();
 
         ServerFacade facade;
         try {

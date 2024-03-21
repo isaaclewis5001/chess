@@ -23,7 +23,7 @@ public class ServerFacade {
     public ServerFacade(String serverURL) throws IOException {
         this.userURL = URI.create(serverURL + "/user").toURL();
         this.sessionURL = URI.create(serverURL + "/session").toURL();
-        this.gamesURL = URI.create(serverURL + "/games").toURL();
+        this.gamesURL = URI.create(serverURL + "/game").toURL();
         this.gson = new Gson();
     }
 
