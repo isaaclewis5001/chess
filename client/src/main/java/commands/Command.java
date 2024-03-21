@@ -21,7 +21,7 @@ public record Command(String[] aliases, CommandEndpoint endpoint) {
 
         String[] params = endpoint.argumentNames();
         if (params.length > 0) {
-            out.print(EscapeSequences.SET_TEXT_COLOR_WHITE + " :");
+            out.print(EscapeSequences.SET_TEXT_COLOR_WHITE + ":");
 
             for (String param : params) {
                 out.print(" ");

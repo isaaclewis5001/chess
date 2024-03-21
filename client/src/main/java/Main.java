@@ -3,6 +3,7 @@ import commands.CommandHandler;
 import commands.general.HelpCmd;
 import commands.general.QuitCmd;
 import commands.session.LoginCmd;
+import commands.session.LogoutCmd;
 import driver.AppDriver;
 import server.ServerFacade;
 import state.AppState;
@@ -15,6 +16,7 @@ public class Main {
         handler.add(new Command(new String[] {"help", "h", "?"}, new HelpCmd()));
         handler.add(new Command(new String[] {"quit", "exit"}, new QuitCmd()));
         handler.add(new Command(new String[] {"login"}, new LoginCmd()));
+        handler.add(new Command(new String[] {"logout"}, new LogoutCmd()));
 
         ServerFacade facade;
         try {

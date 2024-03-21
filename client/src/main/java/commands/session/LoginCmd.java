@@ -24,18 +24,20 @@ public class LoginCmd implements CommandEndpoint {
 
     @Override
     public void handle(AppState state, String[] inputs) throws CommandHandler.BadContextException, CommandHandler.BadArgsException {
-        if (!validInContext(state)) {
-            throw new CommandHandler.BadContextException("You are already logged in.");
-        }
         if (inputs.length != 2) {
             throw new CommandHandler.BadArgsException("Expected 2 inputs, found " + inputs.length + ".");
+        }
+        if (!validInContext(state)) {
+            throw new CommandHandler.BadContextException("You are already logged in.");
         }
         try {
             state.loginState = state.serverFacade.login(inputs[0], inputs[1]);
         } catch (IOException ex) {
             CommonMessages.issueConnecting();
+            return;
         } catch (ServerException ex) {
             CommonMessages.serverException(ex);
+            return;
         } catch (LoginException ex) {
             System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Invalid login credentials.");
         }

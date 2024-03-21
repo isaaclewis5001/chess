@@ -14,7 +14,6 @@ import java.net.URL;
 
 public class ServerFacade {
     private final URL sessionURL;
-
     private final Gson gson;
 
     public ServerFacade(String serverURL) throws IOException {
@@ -30,11 +29,15 @@ public class ServerFacade {
         connection.setRequestMethod(method);
         return connection;
     }
+
+    private int execute(HttpURLConnection connection) throws IOException {
+        connection.connect();
+        return connection.getResponseCode();
+    }
     private <T> int execute(HttpURLConnection connection, T requestObject) throws IOException {
         connection.setDoOutput(true);
         connection.getOutputStream().write(gson.toJson(requestObject).getBytes());
-        connection.connect();
-        return connection.getResponseCode();
+        return execute(connection);
     }
     private <T> T interpretResponseBody(HttpURLConnection connection, Class<T> tClass) throws IOException, ServerException {
         try {
@@ -46,6 +49,10 @@ public class ServerFacade {
 
     private static ServerException generalFailure(int code) {
         return new ServerException("Server failed with status code " + code);
+    }
+
+    private static void insertAuthInfo(HttpURLConnection connection, LoginState login) {
+        connection.setRequestProperty("authorization", login.getAuthToken());
     }
 
     public LoginState login(String username, String password) throws IOException, LoginException, ServerException {
@@ -64,6 +71,18 @@ public class ServerFacade {
         }
         else {
             throw generalFailure(code);
+        }
+    }
+
+
+    public boolean logout(LoginState loginState) {
+        try {
+            HttpURLConnection connection = getConnection(sessionURL, "DELETE");
+            insertAuthInfo(connection, loginState);
+            int code = execute(connection);
+            return code == 200;
+        } catch (Exception ex) {
+            return false;
         }
     }
 
