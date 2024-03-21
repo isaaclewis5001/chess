@@ -14,18 +14,20 @@ public record Command(String[] aliases, CommandEndpoint endpoint) {
                 first = false;
             }
             else {
-                out.println(" / ");
+                out.print(" / ");
             }
             out.print(alias);
         }
-        out.print(EscapeSequences.SET_TEXT_COLOR_DARK_GREY + " :");
+
         String[] params = endpoint.argumentNames();
+        if (params.length > 0) {
+            out.print(EscapeSequences.SET_TEXT_COLOR_WHITE + " :");
 
-        for (String param: params) {
-            out.print(" ");
-            out.print(param);
+            for (String param : params) {
+                out.print(" ");
+                out.print(param);
+            }
         }
-
         out.println(EscapeSequences.SET_TEXT_COLOR_LIGHT_GREY);
         out.println(endpoint.getDescription());
     }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CommandHandler {
-    private final HashMap<String, CommandEndpoint> map;
+    private final HashMap<String, Command> map;
     private final ArrayList<Command> commands;
 
     public static final class UnknownCommandException extends Exception {
@@ -20,6 +20,12 @@ public class CommandHandler {
         }
     }
 
+    public static final class BadArgsException extends Exception {
+        public BadArgsException(String userMessage) {
+            super(userMessage);
+        }
+    }
+
     public CommandHandler() {
         map = new HashMap<>();
         commands = new ArrayList<>();
@@ -28,16 +34,20 @@ public class CommandHandler {
     public void add(Command command) {
         commands.add(command);
         for (String alias: command.aliases()) {
-            map.put(alias, command.endpoint());
+            map.put(alias, command);
         }
     }
 
-    public void handle(AppState state, String command, String[] args) throws UnknownCommandException, BadContextException {
-        CommandEndpoint endpoint =  map.get(command);
+    public void handle(AppState state, String command, String[] args) throws UnknownCommandException, BadContextException, BadArgsException {
+        CommandEndpoint endpoint =  map.get(command).endpoint();
         if (endpoint == null) {
             throw new UnknownCommandException();
         }
         endpoint.handle(state, args);
+    }
+
+    public Command getCommand(String name) {
+        return map.get(name);
     }
 
 
