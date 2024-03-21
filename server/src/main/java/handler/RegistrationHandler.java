@@ -1,7 +1,7 @@
 package handler;
 
 import dataAccess.DatabaseException;
-import model.AuthData;
+import model.data.AuthData;
 import model.request.CreateUserRequest;
 import model.response.ErrorResponse;
 import service.JsonService;

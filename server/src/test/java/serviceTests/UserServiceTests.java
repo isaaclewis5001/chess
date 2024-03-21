@@ -3,7 +3,7 @@ package serviceTests;
 
 import dataAccess.auth.MemoryAuthDAO;
 import dataAccess.user.MemoryUserDAO;
-import model.AuthData;
+import model.data.AuthData;
 import model.request.CreateUserRequest;
 import model.request.LoginRequest;
 import org.junit.jupiter.api.Assertions;

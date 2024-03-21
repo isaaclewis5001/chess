@@ -2,7 +2,7 @@ package dataAccess.auth;
 
 import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
-import model.AuthData;
+import model.data.AuthData;
 
 import java.util.HashMap;
 

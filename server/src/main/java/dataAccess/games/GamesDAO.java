@@ -4,7 +4,7 @@ import chess.ChessGame;
 import dataAccess.BadUpdateException;
 import dataAccess.DatabaseException;
 import dataAccess.MissingKeyException;
-import model.GameDesc;
+import model.data.GameDesc;
 
 import java.util.Collection;
 

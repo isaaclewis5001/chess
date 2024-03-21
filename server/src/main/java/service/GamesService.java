@@ -4,7 +4,7 @@ import dataAccess.BadUpdateException;
 import dataAccess.DatabaseException;
 import dataAccess.MissingKeyException;
 import dataAccess.games.GamesDAO;
-import model.GameDesc;
+import model.data.GameDesc;
 import model.request.CreateGameRequest;
 import model.request.JoinGameRequest;
 import model.response.CreateGameResponse;

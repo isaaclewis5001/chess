@@ -1,6 +1,7 @@
 package model;
 
 import chess.ChessGame;
+import model.data.GameDesc;
 
 public record GameData(
     int gameId,

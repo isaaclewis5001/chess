@@ -2,7 +2,7 @@ package serviceTests;
 
 import chess.ChessGame;
 import dataAccess.games.MemoryGamesDAO;
-import model.GameDesc;
+import model.data.GameDesc;
 import model.request.CreateGameRequest;
 import model.request.JoinGameRequest;
 import org.junit.jupiter.api.Assertions;

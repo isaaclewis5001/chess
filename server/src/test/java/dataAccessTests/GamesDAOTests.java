@@ -8,7 +8,7 @@ import dataAccess.MissingKeyException;
 import dataAccess.games.GamesDAO;
 import dataAccess.games.MemoryGamesDAO;
 import dataAccess.games.SQLGamesDAO;
-import model.GameDesc;
+import model.data.GameDesc;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

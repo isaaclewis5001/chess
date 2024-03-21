@@ -1,6 +1,7 @@
 package model.response;
 
-import model.GameDesc;
+
+import model.data.GameDesc;
 
 import java.util.Collection;
 

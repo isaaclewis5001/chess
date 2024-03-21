@@ -3,7 +3,7 @@ package dataAccess.auth;
 import dataAccess.DatabaseException;
 import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
-import model.AuthData;
+import model.data.AuthData;
 
 /**
  * Data access interface for auth tokens

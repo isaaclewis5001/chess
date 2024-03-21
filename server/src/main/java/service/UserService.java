@@ -5,7 +5,7 @@ import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
 import dataAccess.auth.AuthDAO;
 import dataAccess.user.UserDAO;
-import model.AuthData;
+import model.data.AuthData;
 import model.UserData;
 import model.request.CreateUserRequest;
 import model.request.LoginRequest;

@@ -4,7 +4,7 @@ import dataAccess.DatabaseException;
 import dataAccess.DatabaseManager;
 import dataAccess.DuplicateKeyException;
 import dataAccess.MissingKeyException;
-import model.AuthData;
+import model.data.AuthData;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

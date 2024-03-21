@@ -1,7 +1,6 @@
 package commands.general;
 
 import commands.CommandEndpoint;
-import commands.CommandHandler;
 import state.AppState;
 
 public class QuitCmd implements CommandEndpoint {
@@ -17,7 +16,7 @@ public class QuitCmd implements CommandEndpoint {
     }
 
     @Override
-    public void handle(AppState state, String[] inputs) throws CommandHandler.BadContextException, CommandHandler.BadArgsException {
+    public void handle(AppState state, String[] inputs) {
         state.quit();
     }
 

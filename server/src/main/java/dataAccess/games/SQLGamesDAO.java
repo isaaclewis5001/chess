@@ -2,7 +2,7 @@ package dataAccess.games;
 
 import chess.ChessGame;
 import dataAccess.*;
-import model.GameDesc;
+import model.data.GameDesc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,6 +1,6 @@
 package serviceTests;
 
-import model.AuthData;
+import model.data.AuthData;
 import model.request.CreateGameRequest;
 import model.request.CreateUserRequest;
 import model.request.JoinGameRequest;

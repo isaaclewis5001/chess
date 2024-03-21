@@ -7,7 +7,7 @@ import dataAccess.MissingKeyException;
 import dataAccess.auth.AuthDAO;
 import dataAccess.auth.MemoryAuthDAO;
 import dataAccess.auth.SQLAuthDAO;
-import model.AuthData;
+import model.data.AuthData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
