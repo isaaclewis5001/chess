@@ -1,8 +1,12 @@
 package clientTests;
 
 import org.junit.jupiter.api.*;
+import org.springframework.security.authentication.BadCredentialsException;
 import server.Server;
 import server.ServerFacade;
+import server.UnauthorizedException;
+import service.UserService;
+import state.LoginState;
 
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -37,11 +41,40 @@ public class ServerFacadeTests {
     @Test
     public void register() throws Exception {
         ServerFacade facade = new ServerFacade(serverUrl);
+        LoginState loginState = facade.register("user", "pass", "email");
+        Assertions.assertEquals("user", loginState.getUsername());
     }
 
     @Test
-    public void registerNameInUse() {
-
+    public void registerNameInUse() throws Exception {
+        ServerFacade facade = new ServerFacade(serverUrl);
+        facade.register("user", "pass", "email");
+        Assertions.assertThrows(UserService.UsernameTakenException.class, () ->
+            facade.register("user", "otherPass","otherEmail")
+        );
     }
 
+    @Test
+    public void login() throws Exception {
+        ServerFacade facade = new ServerFacade(serverUrl);
+        facade.register("user", "pass", "email");
+        LoginState state = facade.login("user", "pass");
+        Assertions.assertEquals("user", state.getUsername());
+    }
+
+    @Test
+    public void loginBadCredentials() throws Exception {
+        ServerFacade facade = new ServerFacade(serverUrl);
+        facade.register("user", "pass", "email");
+        Assertions.assertThrows(BadCredentialsException.class, () -> facade.login("user", "otherPass"));
+        Assertions.assertThrows(BadCredentialsException.class, () -> facade.login("otherUser", "pass"));
+    }
+
+    @Test
+    public void logout() throws Exception {
+        ServerFacade facade = new ServerFacade(serverUrl);
+        LoginState loginState = facade.register("user", "pass", "email");
+        facade.logout(loginState);
+        Assertions.assertThrows(UnauthorizedException.class, () -> facade.logout(loginState));
+    }
 }
