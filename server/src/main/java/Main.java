@@ -12,10 +12,10 @@ public class Main {
 
         DataAccessBundle bundle;
         if (dataAccessType.equalsIgnoreCase("SQL")) {
-            bundle = new MemoryDataAccessBundle();
+            bundle = new SQLDataAccessBundle();
         }
         else if (dataAccessType.equalsIgnoreCase("MEM")) {
-            bundle = new SQLDataAccessBundle();
+            bundle = new MemoryDataAccessBundle();
         }
         else {
             System.out.println("Error: Unknown data access type \"" + dataAccessType + "\"");

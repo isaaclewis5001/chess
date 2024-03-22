@@ -10,7 +10,7 @@ import server.ServerException;
 import server.TeamTakenException;
 import server.UnauthorizedException;
 import state.AppState;
-import ui.BoardDrawing;
+import ui.BoardDrawer;
 import ui.CommonMessages;
 import ui.EscapeSequences;
 
@@ -81,9 +81,10 @@ public class JoinGameCmd implements CommandEndpoint {
             state.serverFacade.joinGame(state.loginState, desc.gameID(), team);
 
             ChessBoard board = new ChessBoard();
+            board.resetBoard();
 
-            BoardDrawing.draw(board, ChessGame.TeamColor.WHITE, null);
-            BoardDrawing.draw(board, ChessGame.TeamColor.BLACK, null);
+            BoardDrawer.draw(board, ChessGame.TeamColor.WHITE, null);
+            BoardDrawer.draw(board, ChessGame.TeamColor.BLACK, null);
         } catch (IOException ex) {
             CommonMessages.issueConnecting();
         } catch (ServerException ex) {
