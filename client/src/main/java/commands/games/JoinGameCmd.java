@@ -63,22 +63,22 @@ public class JoinGameCmd implements CommandEndpoint {
             }
         }
 
-        if (state.loginState == null) {
+        if (!state.isLoggedIn()) {
             throw new CommandHandler.BadContextException("You must be logged in to enter a game.");
         }
-        else if (state.gamesList == null) {
+        else if (!state.areGamesListed()) {
             throw new CommandHandler.BadContextException("Please list the ongoing games before attempting to enter one.");
         }
 
         GameDesc desc;
         try {
-            desc = state.gamesList.get(gameNumber);
+            desc = state.gamesList().get(gameNumber);
         } catch (IndexOutOfBoundsException ex) {
             throw new CommandHandler.BadArgsException("Game number out of range. Please refer to the listed games.");
         }
 
         try {
-            state.serverFacade.joinGame(state.loginState, desc.gameID(), team);
+            state.serverFacade.joinGame(state.loginState(), desc.gameID(), team);
 
             ChessBoard board = new ChessBoard();
             board.resetBoard();
@@ -91,7 +91,7 @@ public class JoinGameCmd implements CommandEndpoint {
             CommonMessages.serverException(ex);
         } catch (UnauthorizedException ex) {
             CommonMessages.badAuth();
-            state.loginState = null;
+            state.logout();
         } catch (TeamTakenException ex) {
             System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "The desired team is already taken. Try refreshing your list of games.");
         } catch (BadGameIdException ex) {
@@ -101,6 +101,6 @@ public class JoinGameCmd implements CommandEndpoint {
 
     @Override
     public boolean validInContext(AppState state) {
-        return state.gamesList != null && state.loginState != null;
+        return state.areGamesListed();
     }
 }

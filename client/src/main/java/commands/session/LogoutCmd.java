@@ -25,18 +25,18 @@ public class LogoutCmd implements CommandEndpoint {
         if (!validInContext(state)) {
             throw new CommandHandler.BadContextException("You are not logged in.");
         }
-        if (state.serverFacade.logout(state.loginState)) {
+        if (state.serverFacade.logout(state.loginState())) {
             System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + "Logged out successfully!");
         }
         else {
             System.out.println(EscapeSequences.SET_TEXT_COLOR_YELLOW + "The server had an issue logging you out.");
             System.out.println("You are no longer logged in locally.");
         }
-        state.loginState = null;
+        state.logout();
     }
 
     @Override
     public boolean validInContext(AppState state) {
-        return state.loginState != null;
+        return state.isLoggedIn();
     }
 }

@@ -29,11 +29,11 @@ public class CreateGameCmd implements CommandEndpoint {
         } else if (inputs.length > 1) {
             throw new CommandHandler.BadArgsException("Expected 1 input, found " + inputs.length + ".");
         }
-        if (state.loginState == null) {
+        if (!state.isLoggedIn()) {
             throw new CommandHandler.BadContextException("You must be logged in to create games.");
         }
         try {
-            state.serverFacade.createGame(state.loginState, inputs[0]);
+            state.serverFacade.createGame(state.loginState(), inputs[0]);
             System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + "Game created successfully!");
         } catch (IOException ex) {
             CommonMessages.issueConnecting();
@@ -41,12 +41,12 @@ public class CreateGameCmd implements CommandEndpoint {
             CommonMessages.serverException(ex);
         } catch (UnauthorizedException ex) {
             CommonMessages.badAuth();
-            state.loginState = null;
+            state.logout();
         }
     }
 
     @Override
     public boolean validInContext(AppState state) {
-        return state.loginState != null;
+        return state.isLoggedIn();
     }
 }

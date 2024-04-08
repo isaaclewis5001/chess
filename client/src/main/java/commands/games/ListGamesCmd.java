@@ -29,25 +29,25 @@ public class ListGamesCmd implements CommandEndpoint {
         if (inputs.length != 0) {
             throw new CommandHandler.BadArgsException("Unexpected inputs after command.");
         }
-        if (state.loginState == null) {
+        if (!state.isLoggedIn()) {
             throw new CommandHandler.BadContextException("You must be logged in to see the active games.");
         }
         try {
-            List<GameDesc> games = state.serverFacade.listGames(state.loginState);
-            state.gamesList = new ListedGames(games);
-            state.gamesList.display();
+            List<GameDesc> games = state.serverFacade.listGames(state.loginState());
+            state.setGamesList(new ListedGames(games));
+            state.gamesList().display();
         } catch (IOException ex) {
             CommonMessages.issueConnecting();
         } catch (ServerException ex) {
             CommonMessages.serverException(ex);
         } catch (UnauthorizedException ex) {
             CommonMessages.badAuth();
-            state.loginState = null;
+            state.logout();
         }
     }
 
     @Override
     public boolean validInContext(AppState state) {
-        return state.loginState != null;
+        return state.isLoggedIn();
     }
 }

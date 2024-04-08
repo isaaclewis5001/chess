@@ -31,7 +31,7 @@ public class LoginCmd implements CommandEndpoint {
             throw new CommandHandler.BadContextException("You are already logged in.");
         }
         try {
-            state.loginState = state.serverFacade.login(inputs[0], inputs[1]);
+            state.setLoginState(state.serverFacade.login(inputs[0], inputs[1]));
             System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + "Logged in successfully!");
         } catch (IOException ex) {
             CommonMessages.issueConnecting();
@@ -44,6 +44,6 @@ public class LoginCmd implements CommandEndpoint {
 
     @Override
     public boolean validInContext(AppState state) {
-        return state.loginState == null;
+        return !state.isLoggedIn();
     }
 }
