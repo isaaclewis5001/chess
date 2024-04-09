@@ -26,6 +26,7 @@ public class Server {
         Spark.get("/game", handlerBundle.gamesHandler()::listGames);
         Spark.post("/game", handlerBundle.gamesHandler()::createGame);
         Spark.put("/game", handlerBundle.gamesHandler()::joinGame);
+        Spark.webSocket("/connect", handlerBundle.webSocketHandler());
 
         return Spark.port();
     }

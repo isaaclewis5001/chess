@@ -8,11 +8,14 @@ public class ServiceBundle {
     private final JsonService jsonService;
     private final UserService userService;
 
+    private final GameplayService gameplayService;
+
     public ServiceBundle(DataAccessBundle dataAccessBundle) {
         clearService = new ClearService(dataAccessBundle.auth(), dataAccessBundle.user(), dataAccessBundle.games());
         userService = new UserService(dataAccessBundle.user(), dataAccessBundle.auth());
         jsonService = new JsonService();
         gamesService = new GamesService(dataAccessBundle.games());
+        gameplayService = new GameplayService();
     }
 
     public ClearService clearService() {
@@ -30,4 +33,6 @@ public class ServiceBundle {
     public GamesService gamesService() {
         return gamesService;
     }
+
+    public GameplayService gameplayService() { return gameplayService; }
 }
