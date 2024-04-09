@@ -24,8 +24,8 @@ public class Main {
         handler.add(new Command(new String[] {"logout"}, new LogoutCmd()));
         handler.add(new Command(new String[] {"newgame"}, new CreateGameCmd()));
         handler.add(new Command(new String[] {"listgames"}, new ListGamesCmd()));
-        handler.add(new Command(new String[] {"join"}, new JoinGameCmd(true)));
-        handler.add(new Command(new String[] {"watch"}, new JoinGameCmd(false)));
+        handler.add(new Command(new String[] {"join"}, new JoinGameCmd(true, "ws://localhost:15723")));
+        handler.add(new Command(new String[] {"watch"}, new JoinGameCmd(false, "ws://localhost:15723")));
         return handler;
     }
 

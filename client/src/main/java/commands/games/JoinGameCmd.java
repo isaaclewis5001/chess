@@ -4,13 +4,13 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import commands.CommandEndpoint;
 import commands.CommandHandler;
+import state.GameState;
 import model.data.GameDesc;
 import server.BadGameIdException;
 import server.ServerException;
 import server.TeamTakenException;
 import server.UnauthorizedException;
 import state.AppState;
-import ui.BoardDrawer;
 import ui.CommonMessages;
 import ui.EscapeSequences;
 
@@ -21,9 +21,11 @@ public class JoinGameCmd implements CommandEndpoint {
     private static final String[] WATCH_ARG_NAMES = {"[game number]"};
 
     private final boolean isJoin;
+    private final String wsURL;
 
-    public JoinGameCmd(boolean isJoin) {
+    public JoinGameCmd(boolean isJoin, String wsURL) {
         this.isJoin = isJoin;
+        this.wsURL = wsURL;
     }
 
     @Override
@@ -34,6 +36,29 @@ public class JoinGameCmd implements CommandEndpoint {
     @Override
     public String getDescription() {
         return isJoin ? "Attempts to join a game as a player." :  "Attempts to watch an ongoing game.";
+    }
+
+
+    private void connectToGame(AppState state, GameDesc desc, ChessGame.TeamColor team) {
+        GameState gameState;
+        try {
+            gameState = new GameState(wsURL, state.loginState(), desc);
+        } catch (Exception ex) {
+            CommonMessages.issueConnecting();
+            return;
+        }
+
+        try {
+            if (team == null) {
+                gameState.watch();
+            } else {
+                gameState.join(team);
+            }
+        } catch (IOException ex) {
+            CommonMessages.issueConnecting();
+        }
+
+        state.setGameState(gameState);
     }
 
     @Override
@@ -83,8 +108,7 @@ public class JoinGameCmd implements CommandEndpoint {
             ChessBoard board = new ChessBoard();
             board.resetBoard();
 
-            BoardDrawer.draw(board, ChessGame.TeamColor.WHITE, null);
-            BoardDrawer.draw(board, ChessGame.TeamColor.BLACK, null);
+            connectToGame(state, desc, team);
         } catch (IOException ex) {
             CommonMessages.issueConnecting();
         } catch (ServerException ex) {

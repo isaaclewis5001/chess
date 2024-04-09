@@ -2,14 +2,13 @@ package state;
 
 import server.ServerFacade;
 import commands.CommandHandler;
-import websocket.WebSocketConnection;
 
 public class AppState {
     public final CommandHandler handler;
     public final ServerFacade serverFacade;
     private LoginState loginState;
     private ListedGames gamesList;
-    private WebSocketConnection webSocket;
+    private GameState gameState;
 
     private boolean quit;
 
@@ -25,13 +24,13 @@ public class AppState {
         this.serverFacade = serverFacade;
         this.gamesList = null;
         this.loginState = null;
-        this.webSocket = null;
+        this.gameState = null;
     }
 
     public void logout() {
         loginState = null;
         gamesList = null;
-        webSocket = null;
+        gameState = null;
     }
 
     public boolean isLoggedIn() {
@@ -59,7 +58,11 @@ public class AppState {
         return gamesList;
     }
 
+    public void setGameState(GameState state) {
+        this.gameState = state;
+    }
 
-
-
+    public void getGameState(GameState state) {
+        this.gameState = state;
+    }
 }
