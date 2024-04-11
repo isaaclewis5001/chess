@@ -2,8 +2,6 @@ package ui;
 
 import server.ServerException;
 
-import java.util.function.Consumer;
-
 public class CommonMessages {
     public static void issueConnecting() {
         System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Issue connecting to server. Try again or check that the server is available.");
@@ -14,12 +12,5 @@ public class CommonMessages {
     }
     public static void badAuth() {
         System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Your login is invalid or expired. You will now be logged out.");
-    }
-
-    public static void wsInterrupt(Consumer<StringBuilder> buildFn) {
-        StringBuilder builder = new StringBuilder(EscapeSequences.INT_BEGIN);
-        buildFn.accept(builder);
-        builder.append(EscapeSequences.INT_END);
-        System.out.println(builder);
     }
 }

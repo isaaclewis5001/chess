@@ -59,7 +59,7 @@ public class BoardDrawer {
         String colLabels = getColLabels(fromPerspective);
 
         ChessPiece[] rowPieces = new ChessPiece[8];
-
+        output.append("/n");
         output.append(colLabels);
         for (int row = 7; row >= 0; row--) {
             for (int col = 0; col < 8; col++) {

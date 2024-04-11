@@ -50,6 +50,10 @@ public class ChessGame {
         calculateMoves();
     }
 
+    public boolean isMoveValid(ChessMove move) {
+        return moves.contains(move);
+    }
+
     /**
      * Enum identifying the 2 possible teams in a chess game
      */
@@ -187,6 +191,14 @@ public class ChessGame {
         currentBoard = new BoardState(board);
         pastBoards.put(currentBoard, 1);
         movesSinceCaptureOrPush = 0;
+        calculateMoves();
+    }
+
+
+    public void updateBoard(BoardState board) {
+        int timesPlayed = pastBoards.getOrDefault(board, 0) + 1;
+        pastBoards.put(new BoardState(board), timesPlayed);
+        currentBoard = board;
         calculateMoves();
     }
 
