@@ -1,6 +1,7 @@
 package commands.general;
 
 import commands.CommandEndpoint;
+import commands.CommandHandler;
 import state.AppState;
 
 public class QuitCmd implements CommandEndpoint {
@@ -16,12 +17,15 @@ public class QuitCmd implements CommandEndpoint {
     }
 
     @Override
-    public void handle(AppState state, String[] inputs) {
+    public void handle(AppState state, String[] inputs) throws CommandHandler.BadContextException {
+        if (state.getGameState() != null) {
+            throw new CommandHandler.BadContextException("Please leave your game first.");
+        }
         state.quit();
     }
 
     @Override
     public boolean validInContext(AppState state) {
-        return true;
+        return state.getGameState() == null;
     }
 }

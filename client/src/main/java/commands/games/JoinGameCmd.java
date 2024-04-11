@@ -93,6 +93,8 @@ public class JoinGameCmd implements CommandEndpoint {
         }
         else if (!state.areGamesListed()) {
             throw new CommandHandler.BadContextException("Please list the ongoing games before attempting to enter one.");
+        } else if (state.getGameState() != null) {
+            throw new CommandHandler.BadContextException("You are already playing a game.");
         }
 
         GameDesc desc;
@@ -125,6 +127,6 @@ public class JoinGameCmd implements CommandEndpoint {
 
     @Override
     public boolean validInContext(AppState state) {
-        return state.areGamesListed();
+        return state.areGamesListed() && state.getGameState() == null;
     }
 }

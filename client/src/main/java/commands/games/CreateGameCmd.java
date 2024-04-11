@@ -31,6 +31,8 @@ public class CreateGameCmd implements CommandEndpoint {
         }
         if (!state.isLoggedIn()) {
             throw new CommandHandler.BadContextException("You must be logged in to create games.");
+        } else if (state.getGameState() != null) {
+            throw new CommandHandler.BadContextException("You cannot create a game while playing or observing.");
         }
         try {
             state.serverFacade.createGame(state.loginState(), inputs[0]);
@@ -47,6 +49,6 @@ public class CreateGameCmd implements CommandEndpoint {
 
     @Override
     public boolean validInContext(AppState state) {
-        return state.isLoggedIn();
+        return state.isLoggedIn() && state.getGameState() == null;
     }
 }

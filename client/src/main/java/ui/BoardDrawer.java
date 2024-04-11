@@ -51,11 +51,10 @@ public class BoardDrawer {
         }
         return prefix + suffix;
     }
-    public static void draw(ChessBoard board, ChessGame.TeamColor fromPerspective, ChessPosition highlightPos) {
+    public static void draw(StringBuilder output, ChessBoard board, ChessGame.TeamColor fromPerspective, ChessPosition highlightPos) {
         if (highlightPos != null) {
             throw new RuntimeException("Move highlighting not implemented");
         }
-        StringBuilder output = new StringBuilder();
         boolean lightSquareRowStart = true;
         String colLabels = getColLabels(fromPerspective);
 
@@ -85,6 +84,5 @@ public class BoardDrawer {
             lightSquareRowStart = !lightSquareRowStart;
         }
         output.append(colLabels);
-        System.out.print(output);
     }
 }

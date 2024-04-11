@@ -27,11 +27,11 @@ public class RegisterCmd implements CommandEndpoint {
         if (inputs.length != 3) {
             throw new CommandHandler.BadArgsException("Expected 3 inputs, found " + inputs.length + ".");
         }
-        if (state.loginState != null) {
+        if (state.isLoggedIn()) {
             throw new CommandHandler.BadContextException("You must be logged out to create an account.");
         }
         try {
-            state.loginState = state.serverFacade.register(inputs[0], inputs[1], inputs[2]);
+            state.setLoginState(state.serverFacade.register(inputs[0], inputs[1], inputs[2]));
             System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + "Account created successfully!");
         } catch (IOException ex) {
             CommonMessages.issueConnecting();
@@ -44,6 +44,6 @@ public class RegisterCmd implements CommandEndpoint {
 
     @Override
     public boolean validInContext(AppState state) {
-        return state.loginState == null;
+        return !state.isLoggedIn();
     }
 }

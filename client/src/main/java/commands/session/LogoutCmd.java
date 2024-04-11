@@ -24,6 +24,8 @@ public class LogoutCmd implements CommandEndpoint {
         }
         if (!validInContext(state)) {
             throw new CommandHandler.BadContextException("You are not logged in.");
+        } else if (state.getGameState() != null) {
+            throw new CommandHandler.BadContextException("Please logout first.");
         }
         if (state.serverFacade.logout(state.loginState())) {
             System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + "Logged out successfully!");
@@ -37,6 +39,6 @@ public class LogoutCmd implements CommandEndpoint {
 
     @Override
     public boolean validInContext(AppState state) {
-        return state.isLoggedIn();
+        return state.isLoggedIn() && state.getGameState() == null;
     }
 }

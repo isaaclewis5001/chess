@@ -62,7 +62,7 @@ public class AppState {
         this.gameState = state;
     }
 
-    public void getGameState(GameState state) {
-        this.gameState = state;
+    public GameState getGameState() {
+        return gameState;
     }
 }

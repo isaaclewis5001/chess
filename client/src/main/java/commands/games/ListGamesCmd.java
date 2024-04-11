@@ -31,6 +31,8 @@ public class ListGamesCmd implements CommandEndpoint {
         }
         if (!state.isLoggedIn()) {
             throw new CommandHandler.BadContextException("You must be logged in to see the active games.");
+        } else if (state.getGameState() != null) {
+            throw new CommandHandler.BadContextException("You cannot list games while playing or observing.ing ");
         }
         try {
             List<GameDesc> games = state.serverFacade.listGames(state.loginState());
@@ -48,6 +50,6 @@ public class ListGamesCmd implements CommandEndpoint {
 
     @Override
     public boolean validInContext(AppState state) {
-        return state.isLoggedIn();
+        return state.isLoggedIn() && state.getGameState() == null;
     }
 }
