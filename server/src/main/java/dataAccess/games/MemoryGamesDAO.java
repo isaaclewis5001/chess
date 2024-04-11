@@ -3,24 +3,23 @@ package dataAccess.games;
 import chess.ChessGame;
 import dataAccess.BadUpdateException;
 import dataAccess.MissingKeyException;
-import model.GameData;
 import model.data.GameDesc;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MemoryGamesDAO implements GamesDAO {
-    private final ArrayList<GameData> games;
+    private final ArrayList<GameDesc> games;
 
     @Override
     public List<GameDesc> listGames() {
-        return games.stream().map(GameData::desc).toList();
+        return games;
     }
 
     @Override
     public int createGame(String gameName) {
         int newId = games.size() + 1;
-        games.add(new GameData(newId, null, null, gameName, null));
+        games.add(new GameDesc(newId, null, null, gameName));
         return newId;
     }
 
@@ -31,18 +30,26 @@ public class MemoryGamesDAO implements GamesDAO {
         if (!gameExists(gameId)) {
             throw new MissingKeyException("gameId", String.valueOf(gameId));
         }
-        GameData oldGame = games.get(gameId - 1);
+        GameDesc oldGame = games.get(gameId - 1);
 
         if (oldGame.getPlayerUsername(color) != null) {
             throw new BadUpdateException("username already present");
         }
-        GameData newGame = oldGame.replacePlayer(color, username);
+        GameDesc newGame = oldGame.replacePlayer(color, username);
         games.set(gameId - 1, newGame);
     }
 
     @Override
     public boolean gameExists(int gameId) {
         return gameId <= games.size() && gameId > 0;
+    }
+
+    @Override
+    public GameDesc fetchGame(int gameId) throws MissingKeyException {
+        if (!gameExists(gameId)) {
+            throw new MissingKeyException("gameID", String.valueOf(gameId));
+        }
+        return games.get(gameId);
     }
 
     @Override

@@ -37,6 +37,8 @@ public interface GamesDAO {
 
     boolean gameExists(int gameId) throws DatabaseException;
 
+    GameDesc fetchGame(int gameId) throws DatabaseException, MissingKeyException;
+
 
     /**
      * Removes all games.

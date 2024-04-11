@@ -102,6 +102,30 @@ public class SQLGamesDAO implements GamesDAO {
         }
     }
 
+    @Override
+    public GameDesc fetchGame(int gameId) throws DatabaseException, MissingKeyException {
+        try (Connection connection = DatabaseManager.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement((
+                    "SELECT gameId, whiteUsername, blackUsername, gameName FROM gamesDesc WHERE gameId = ?;"
+            ));
+            statement.setInt(1, gameId);
+            ResultSet results = statement.executeQuery();
+            if (!results.next()) {
+                throw new MissingKeyException("gameId", String.valueOf(gameId));
+            }
+            return new GameDesc(
+                    results.getInt(1),
+                    results.getString(2),
+                    results.getString(3),
+                    results.getString(4)
+            );
+        }
+        catch (SQLException exception) {
+            throw new DatabaseException(exception.getMessage());
+        }
+    }
+
+
 
     @Override
     public void clear() throws DatabaseException {

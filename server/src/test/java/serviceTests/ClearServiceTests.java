@@ -1,5 +1,6 @@
 package serviceTests;
 
+import com.google.gson.GsonBuilder;
 import model.data.AuthData;
 import model.request.CreateGameRequest;
 import model.request.CreateUserRequest;
@@ -21,7 +22,7 @@ public class ClearServiceTests {
 
     private void setup() {
         DataAccessBundle dataAccessBundle = new MemoryDataAccessBundle();
-        serviceBundle = new ServiceBundle(dataAccessBundle);
+        serviceBundle = new ServiceBundle(dataAccessBundle, new GsonBuilder());
     }
 
     @Test

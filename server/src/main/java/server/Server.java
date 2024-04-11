@@ -2,6 +2,7 @@ package server;
 
 import dataAccess.bundles.DataAccessBundle;
 import dataAccess.bundles.SQLDataAccessBundle;
+import gson.Adapters;
 import handler.HandlerBundle;
 import service.ServiceBundle;
 import spark.*;
@@ -16,6 +17,8 @@ public class Server {
         Spark.staticFiles.location("web");
 
 
+        Spark.webSocket("/connect", handlerBundle.webSocketHandler());
+
         Spark.init();
         Spark.awaitInitialization();
 
@@ -26,7 +29,6 @@ public class Server {
         Spark.get("/game", handlerBundle.gamesHandler()::listGames);
         Spark.post("/game", handlerBundle.gamesHandler()::createGame);
         Spark.put("/game", handlerBundle.gamesHandler()::joinGame);
-        Spark.webSocket("/connect", handlerBundle.webSocketHandler());
 
         return Spark.port();
     }
@@ -37,7 +39,7 @@ public class Server {
     }
 
     public Server(DataAccessBundle dataAccessBundle) {
-        ServiceBundle serviceBundle = new ServiceBundle(dataAccessBundle);
+        ServiceBundle serviceBundle = new ServiceBundle(dataAccessBundle, Adapters.getGsonBuilder());
         this.handlerBundle = new HandlerBundle(serviceBundle);
     }
 

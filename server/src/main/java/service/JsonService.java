@@ -1,6 +1,7 @@
 package service;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import model.validation.Validate;
 import model.validation.ValidationException;
 
@@ -32,8 +33,8 @@ public class JsonService {
         return result;
     }
 
-    public JsonService() {
-        gson = new Gson();
+    public JsonService(GsonBuilder gsonBuilder) {
+        gson = gsonBuilder.create();
     }
 
 }

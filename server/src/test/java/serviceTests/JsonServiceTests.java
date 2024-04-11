@@ -1,5 +1,6 @@
 package serviceTests;
 
+import com.google.gson.GsonBuilder;
 import model.validation.Validate;
 import model.validation.ValidationException;
 import org.junit.jupiter.api.Assertions;
@@ -10,7 +11,7 @@ import service.JsonService;
 @DisplayName("Json Service Tests")
 public class JsonServiceTests {
     private static JsonService createService() {
-        return new JsonService();
+        return new JsonService(new GsonBuilder());
     }
 
 

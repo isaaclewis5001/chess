@@ -15,7 +15,7 @@ public class HandlerBundle {
         registrationHandler = new RegistrationHandler(serviceBundle.userService(), serviceBundle.jsonService());
         sessionHandler = new SessionHandler(serviceBundle.userService(), serviceBundle.jsonService());
         gamesHandler = new GamesHandler(serviceBundle.userService(), serviceBundle.jsonService(), serviceBundle.gamesService());
-        webSocketHandler = new WsHandler(serviceBundle.jsonService(), serviceBundle.userService(), serviceBundle.gameplayService());
+        webSocketHandler = new WsHandler(serviceBundle.jsonService(), serviceBundle.gameplayService(), serviceBundle.gamesService());
     }
 
     public ClearHandler clearHandler() {

@@ -1,14 +1,14 @@
 package webSocketMessages.serverMessages;
 
-import chess.ChessBoard;
+import chess.BoardState;
 
 public class LoadGameSM extends ServerMessage {
-    private final ChessBoard game;
-    public LoadGameSM(ChessBoard board) {
+    private final BoardState game;
+    public LoadGameSM(BoardState board) {
         super(ServerMessageType.LOAD_GAME);
         game = board;
     }
-    public ChessBoard getBoard() {
+    public BoardState getBoard() {
         return game;
     }
 }

@@ -1,5 +1,6 @@
 package service;
 
+import com.google.gson.GsonBuilder;
 import dataAccess.bundles.DataAccessBundle;
 
 public class ServiceBundle {
@@ -8,14 +9,14 @@ public class ServiceBundle {
     private final JsonService jsonService;
     private final UserService userService;
 
-    private final GameplayService gameplayService;
+    private final WsGameplayService gameplayService;
 
-    public ServiceBundle(DataAccessBundle dataAccessBundle) {
+    public ServiceBundle(DataAccessBundle dataAccessBundle, GsonBuilder gsonBuilder) {
         clearService = new ClearService(dataAccessBundle.auth(), dataAccessBundle.user(), dataAccessBundle.games());
         userService = new UserService(dataAccessBundle.user(), dataAccessBundle.auth());
-        jsonService = new JsonService();
+        jsonService = new JsonService(gsonBuilder);
         gamesService = new GamesService(dataAccessBundle.games());
-        gameplayService = new GameplayService();
+        gameplayService = new WsGameplayService(userService);
     }
 
     public ClearService clearService() {
@@ -34,5 +35,5 @@ public class ServiceBundle {
         return gamesService;
     }
 
-    public GameplayService gameplayService() { return gameplayService; }
+    public WsGameplayService gameplayService() { return gameplayService; }
 }

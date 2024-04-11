@@ -196,6 +196,9 @@ public class ChessGame {
         return currentBoard.getBoard();
     }
 
+    public BoardState getBoardState() {
+        return currentBoard;
+    }
 
     private void calculateMoves() {
         if (isGameEnd) {

@@ -54,6 +54,18 @@ public class GamesService {
         }
     }
 
+    public GameDesc fetchGame(int gameId) throws BadGameIdException, DatabaseException {
+        try {
+            return gamesDAO.fetchGame(gameId);
+        } catch (MissingKeyException ex) {
+            throw new BadGameIdException(ex);
+        }
+    }
+
+    public boolean gameExists(int gameId) throws DatabaseException {
+        return gamesDAO.gameExists(gameId);
+    }
+
     public GamesService(GamesDAO gamesDao) {
         this.gamesDAO = gamesDao;
     }
