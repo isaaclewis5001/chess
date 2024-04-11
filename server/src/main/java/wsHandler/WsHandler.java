@@ -70,8 +70,6 @@ public class WsHandler {
             removeUser(client);
             return;
         }
-        System.out.println(command.getPlayerColor());
-        System.out.println(desc.getPlayerUsername(command.getPlayerColor()));
         String expectedUser = desc.getPlayerUsername(command.getPlayerColor());
         if (expectedUser == null || !expectedUser.equals(client.username())) {
             sendErrorMessage(client.session(), "cannot join team");
@@ -117,14 +115,62 @@ public class WsHandler {
     }
 
     private void onMove(WsClient client, MakeMoveUGC command) {
-        gameplayService.getGame(client.gameId());
+        WsGame game = gameplayService.getGame(client.gameId());
+        if (game == null) {
+            sendErrorMessage(client.session(), "game does not exist");
+            return;
+        }
+        if (game.gameLocked()) {
+            sendErrorMessage(client.session(), "game is inactive");
+            return;
+        }
+        if (!client.username().equals(game.getPlayerToMove())) {
+            sendErrorMessage(client.session(), "not your turn");
+            return;
+        }
+
+        if (!game.makeMove(command.getMove())) {
+            sendErrorMessage(client.session(), "invalid move");
+            return;
+        }
+
+        game.clientsIterator().forEachRemaining((WsClient otherClient) -> {
+            sendGameState(otherClient, game.getBoard());
+            if (!client.username().equals(otherClient.username())) {
+                sendNotification(otherClient, "move " + jsonService.toJson(command.getMove()));
+            }
+        });
     }
-    private void onLeave(WsClient client, LeaveUGC command) {
+    private void onLeave(WsClient client) {
+        WsGame game = gameplayService.getGame(client.gameId());
+        if (game == null) {
+            return;
+        }
 
+        removeUser(client);
+
+        game.clientsIterator().forEachRemaining((WsClient otherClient) -> {
+            if (!client.username().equals(otherClient.username())) {
+                sendNotification(otherClient, "leave " + client.username());
+            }
+        });
     }
 
-    private void onResign(WsClient client, ResignUGC command) {
+    private void onResign(WsClient client) {
+        WsGame game = gameplayService.getGame(client.gameId());
+        if (game == null) {
+            sendErrorMessage(client.session(), "game does not exist");
+            return;
+        }
 
+        if (!game.resign(client.username())) {
+            sendErrorMessage(client.session(), "resign unavailable");
+            return;
+        }
+
+        game.clientsIterator().forEachRemaining((WsClient otherClient) ->
+            sendNotification(otherClient, "leave " + client.username())
+        );
     }
 
 
@@ -170,19 +216,19 @@ public class WsHandler {
                 }
             }
             case LEAVE -> {
-                if (command instanceof LeaveUGC leaveCommand) {
+                if (command instanceof LeaveUGC) {
                     WsClient client = getUser(session, command);
                     if (client != null) {
-                        onLeave(client, leaveCommand);
+                        onLeave(client);
                     }
                     return;
                 }
             }
             case RESIGN -> {
-                if (command instanceof ResignUGC resignCommand) {
+                if (command instanceof ResignUGC) {
                     WsClient client = getUser(session, command);
                     if (client != null) {
-                        onResign(client, resignCommand);
+                        onResign(client);
                     }
                     return;
                 }
@@ -202,6 +248,7 @@ public class WsHandler {
     }
 
     private void sendNotification(WsClient client, String message) {
+        System.out.println("Send notification " + message);
         NotificationSM messageObject = new NotificationSM(message);
         try {
             client.session().getRemote().sendString(jsonService.toJson(messageObject));

@@ -94,4 +94,9 @@ public final class BoardState {
     public ChessBoard getBoard() {
         return board;
     }
+
+    @Override
+    public String toString() {
+        return teamToMove + " " + whiteTeamInfo.getKingSquare() + " " + blackTeamInfo.getKingSquare() + "\n" + board;
+    }
 }

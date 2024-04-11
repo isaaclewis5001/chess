@@ -24,9 +24,13 @@ public class ChessGame {
     private HashSet<ChessMove> moves;
 
     public ChessGame() {
+        this(new ChessBoard());
+    }
+
+    public ChessGame(ChessBoard board) {
         pastBoards = new HashMap<>();
         moves = new HashSet<>();
-        setBoard(new ChessBoard());
+        setBoard(board);
     }
 
     /**
@@ -109,7 +113,6 @@ public class ChessGame {
         pastBoards.put(boardCopy, timesPlayed);
 
         calculateMoves();
-
         if (timesPlayed >= 3) {
             isGameEnd = true;
             isCheckmate = false;
@@ -207,6 +210,7 @@ public class ChessGame {
         MoveCollection ownMoves = new MoveCollection(currentBoard);
         ownMoves.calculateMoves(false);
         moves = ownMoves.filteredMoves();
+
 
         isCheck = ownMoves.isInCheck();
         hasMoves = !moves.isEmpty();

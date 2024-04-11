@@ -108,4 +108,17 @@ public class ChessBoard {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (int row = 8; row >= 1; row--) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPiece piece = getPiece(new ChessPosition(row, col));
+                builder.append(String.format("%-15s", piece));
+            }
+            builder.append("\n");
+        }
+        return builder.toString();
+    }
 }

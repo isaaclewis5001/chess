@@ -11,13 +11,13 @@ import java.util.Objects;
 public final class ChessMove {
     private final ChessPosition startPos;
     private final ChessPosition endPos;
-    private final ChessPiece.PieceType promotion;
+    private final ChessPiece.PieceType promotionPiece;
 
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         this.startPos = startPosition.copy();
         this.endPos = endPosition.copy();
-        this.promotion = promotionPiece;
+        this.promotionPiece = promotionPiece;
     }
 
 
@@ -44,7 +44,7 @@ public final class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion.
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        return promotion;
+        return promotionPiece;
     }
 
     @Override
@@ -53,7 +53,7 @@ public final class ChessMove {
             return (
                     startPos.equals(other.startPos) &&
                     endPos.equals(other.endPos) &&
-                    promotion == other.promotion
+                    promotionPiece == other.promotionPiece
             );
         }
         return false;
@@ -61,16 +61,16 @@ public final class ChessMove {
 
     @Override
     public int hashCode() {
-        return Objects.hash(startPos, endPos, promotion);
+        return Objects.hash(startPos, endPos, promotionPiece);
     }
 
     @Override
     public String toString() {
-        if (promotion == null) {
+        if (promotionPiece == null) {
             return String.format("Move %s to %s", startPos, endPos);
         }
         else {
-            return String.format("Move %s to %s (promote into %s)", startPos, endPos, promotion);
+            return String.format("Move %s to %s (promote into %s)", startPos, endPos, promotionPiece);
         }
     }
 
@@ -90,6 +90,7 @@ public final class ChessMove {
                 ChessPosition rookEnd = startPos.getOffset(0, 1);
                 new ChessMove(rookStart, rookEnd, null).makeMove(board);
             }
+            board.getTeamInfo(piece.getTeamColor()).setKingSquare(endPos);
         }
 
         boolean isPawn = piece.getPieceType() == ChessPiece.PieceType.PAWN;
@@ -112,8 +113,8 @@ public final class ChessMove {
 
 
         board.addPiece(startPos, null);
-        if (promotion != null) {
-            piece = new ChessPiece(piece.getTeamColor(), promotion);
+        if (promotionPiece != null) {
+            piece = new ChessPiece(piece.getTeamColor(), promotionPiece);
         }
         board.addPiece(endPos, piece);
         return endPiece != null || isPawn;
