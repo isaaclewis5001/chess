@@ -3,6 +3,10 @@ package gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import webSocketMessages.serverMessages.ErrorSM;
+import webSocketMessages.serverMessages.LoadGameSM;
+import webSocketMessages.serverMessages.NotificationSM;
+import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.*;
 
 public class Adapters {
@@ -24,6 +28,20 @@ public class Adapters {
                 }
             }
             return ugc;
+        });
+        gb.registerTypeAdapter(ServerMessage.class, (JsonDeserializer<ServerMessage>)(jsonElement, typeOf, context) -> {
+            ServerMessage sm = null;
+            if (jsonElement.isJsonObject()) {
+                JsonElement commandType = jsonElement.getAsJsonObject().get("serverMessageType");
+                if (commandType.isJsonPrimitive()) {
+                    switch (ServerMessage.ServerMessageType.valueOf(commandType.getAsString())) {
+                        case LOAD_GAME -> sm = context.deserialize(jsonElement, LoadGameSM.class);
+                        case NOTIFICATION -> sm = context.deserialize(jsonElement, NotificationSM.class);
+                        case ERROR -> sm = context.deserialize(jsonElement, ErrorSM.class);
+                    }
+                }
+            }
+            return sm;
         });
         return gb;
     }

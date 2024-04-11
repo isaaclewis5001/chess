@@ -117,7 +117,7 @@ public class WsHandler {
     }
 
     private void onMove(WsClient client, MakeMoveUGC command) {
-
+        gameplayService.getGame(client.gameId());
     }
     private void onLeave(WsClient client, LeaveUGC command) {
 

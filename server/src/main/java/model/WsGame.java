@@ -24,6 +24,17 @@ public class WsGame {
         this.game.getBoard().resetBoard();
     }
 
+    public void makeMove() {
+
+    }
+
+    public String getPlayer(ChessGame.TeamColor color) {
+        if (color == ChessGame.TeamColor.WHITE) {
+            return whiteUsername;
+        } else {
+            return blackUsername;
+        }
+    }
 
     public void setPlayer(ChessGame.TeamColor color, String username) {
         if (color == ChessGame.TeamColor.WHITE) {
