@@ -14,25 +14,23 @@ public class WebSocketConnection extends Endpoint {
     private final Session wsSession;
     private final Gson gson;
 
-    public<Receive> WebSocketConnection(String wsServerURL, Consumer<Receive> handler, Class<Receive> receiveClass) throws IOException, DeploymentException {
+    public<R> WebSocketConnection(String wsServerURL, Consumer<R> handler, Class<R> receiveClass) throws IOException, DeploymentException {
         URI uri = URI.create(wsServerURL + "/connect");
         this.wsSession = ContainerProvider.getWebSocketContainer().connectToServer(this, uri);
         this.gson = Adapters.getGsonBuilder().create();
-        this.wsSession.addMessageHandler(new MessageHandler.Whole<String>() {
-            public void onMessage(String message) {
-                Receive receivedObject;
-                try {
-                    receivedObject = gson.fromJson(message, receiveClass);
-                } catch (JsonSyntaxException exception) {
-                    System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error parsing server message");
-                    return;
-                }
-                handler.accept(receivedObject);
+        this.wsSession.addMessageHandler((MessageHandler.Whole<String>) message -> {
+            R receivedObject;
+            try {
+                receivedObject = gson.fromJson(message, receiveClass);
+            } catch (JsonSyntaxException exception) {
+                System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Error parsing server message");
+                return;
             }
+            handler.accept(receivedObject);
         });
     }
 
-    public<Send> void send(Send command) throws IOException {
+    public<S> void send(S command) throws IOException {
         String message = gson.toJson(command);
         this.wsSession.getBasicRemote().sendText(message);
     }
