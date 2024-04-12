@@ -3,16 +3,16 @@ package state;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
+import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import model.data.GameDesc;
 import ui.BoardDrawer;
+import ui.EscapeSequences;
 import webSocketMessages.serverMessages.ErrorSM;
 import webSocketMessages.serverMessages.LoadGameSM;
 import webSocketMessages.serverMessages.NotificationSM;
 import webSocketMessages.serverMessages.ServerMessage;
-import webSocketMessages.userCommands.JoinObserverUGC;
-import webSocketMessages.userCommands.JoinPlayerUGC;
-import webSocketMessages.userCommands.LeaveUGC;
-import webSocketMessages.userCommands.MakeMoveUGC;
+import webSocketMessages.userCommands.*;
 import websocket.WebSocketConnection;
 
 import javax.websocket.DeploymentException;
@@ -25,6 +25,7 @@ public class GameState implements Consumer<ServerMessage> {
     private final LoginState loginState;
     private final ChessGame game;
 
+    private final Gson gson = new Gson();
     private ChessGame.TeamColor color;
 
     public ChessGame.TeamColor getTeam() {
@@ -39,12 +40,12 @@ public class GameState implements Consumer<ServerMessage> {
         this.color = null;
     }
 
-    public void draw(StringBuilder builder, ChessPosition highlightPos) {
+    public void draw(StringBuilder builder, ChessPosition highlightPos, ChessGame.TeamColor highlightTeam) {
         ChessGame.TeamColor perspective = color;
         if (perspective == null) {
             perspective = ChessGame.TeamColor.WHITE;
         }
-        BoardDrawer.draw(builder, game.getBoard(), perspective, highlightPos);
+        BoardDrawer.draw(builder, game.getBoardState(), perspective, highlightPos, highlightTeam);
     }
 
     public void join(ChessGame.TeamColor color) throws IOException {
@@ -64,14 +65,54 @@ public class GameState implements Consumer<ServerMessage> {
     private void onLoadGame(LoadGameSM loadGameSM) {
         this.game.updateBoard(loadGameSM.getBoard());
         StringBuilder builder = new StringBuilder();
-        this.draw(builder, null);
+        this.draw(builder, null, null);
         System.out.println(builder);
+        if (game.isInCheckmate(game.getTeamTurn())) {
+            System.out.println("Check!");
+        }
+        else if (game.isInCheck(game.getTeamTurn())) {
+            System.out.println("Checkmate!");
+            System.out.println(game.getTeamTurn().opponent() + " wins!");
+        }
+        else if (game.isInStalemate(game.getTeamTurn())) {
+            System.out.println("Stalemate!");
+        }
     }
     private void onError(ErrorSM errorSM) {
-
+        System.out.println(EscapeSequences.SET_TEXT_COLOR_RED + "Server error:");
+        System.out.println(errorSM.getErrorMessage());
     }
 
     private void onNotify(NotificationSM notificationSM) {
+        String[] segments = notificationSM.getMessage().split(" ", 2);
+        if (segments.length == 0) {
+            return;
+        }
+        String base = segments[0];
+        switch (base) {
+            case "join" -> {
+                String[] subSegments = segments[1].split(" ", 2);
+                if (subSegments.length == 2) {
+                    System.out.println(subSegments[1] + " joined as " + subSegments[0]);
+                }
+            }
+            case "obs" ->
+                System.out.println(segments[1] + " is now watching");
+            case "move" -> {
+                ChessMove move;
+                try {
+                    move = gson.fromJson(segments[1], ChessMove.class);
+                } catch (JsonParseException ex) { return; }
+                System.out.println("Move made: " + move.getStartPosition() + " to " + move.getEndPosition());
+            }
+            case "leave" ->
+                System.out.println(segments[1] + " left.");
+            case "resign" -> {
+                game.setGameOver();
+                System.out.println("Resignation: " + segments[1] + " resigned.");
+            }
+
+        }
 
     }
     @Override
@@ -101,5 +142,9 @@ public class GameState implements Consumer<ServerMessage> {
 
     public void move(ChessMove move) throws IOException {
         connection.send(new MakeMoveUGC(loginState.getAuthToken(), gameId, move));
+    }
+
+    public void resign() throws IOException {
+        connection.send(new ResignUGC(loginState.getAuthToken(), gameId));
     }
 }

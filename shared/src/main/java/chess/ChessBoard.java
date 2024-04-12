@@ -41,6 +41,10 @@ public class ChessBoard {
         return squares[position.getIndex()];
     }
 
+    public ChessPiece getPiece(int index) {
+        return squares[index];
+    }
+
     // Lists out the pieces on the first and eight ranks for resetBoard()
     private static final ChessPiece.PieceType[] PIECE_ORDER = {
             ChessPiece.PieceType.ROOK,

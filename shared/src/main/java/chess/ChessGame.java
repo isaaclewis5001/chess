@@ -51,7 +51,7 @@ public class ChessGame {
     }
 
     public boolean isMoveValid(ChessMove move) {
-        return moves.contains(move);
+        return !isGameEnd && moves.contains(move);
     }
 
     /**
@@ -160,6 +160,14 @@ public class ChessGame {
         return computeMaybeFlipped(teamColor, (ChessGame maybeFlipped) ->
             maybeFlipped.isCheckmate
         );
+    }
+
+    public boolean isGameOver() {
+        return isGameEnd || (!hasMoves);
+    }
+
+    public void setGameOver() {
+        isGameEnd = true;
     }
 
     /**

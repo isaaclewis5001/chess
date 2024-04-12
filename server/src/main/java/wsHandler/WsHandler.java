@@ -169,14 +169,13 @@ public class WsHandler {
         }
 
         game.clientsIterator().forEachRemaining((WsClient otherClient) ->
-            sendNotification(otherClient, "leave " + client.username())
+            sendNotification(otherClient, "resign " + client.username())
         );
     }
 
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) {
-        System.out.println(message);
         UserGameCommand command;
         try {
             command = jsonService.fromJson(message, UserGameCommand.class);
@@ -238,7 +237,6 @@ public class WsHandler {
     }
 
     private void sendGameState(WsClient client, BoardState board) {
-        System.out.println("Sent game to " + client.username());
         LoadGameSM messageObject = new LoadGameSM(board);
         try {
             client.session().getRemote().sendString(jsonService.toJson(messageObject));
@@ -248,7 +246,6 @@ public class WsHandler {
     }
 
     private void sendNotification(WsClient client, String message) {
-        System.out.println("Send notification " + message);
         NotificationSM messageObject = new NotificationSM(message);
         try {
             client.session().getRemote().sendString(jsonService.toJson(messageObject));
@@ -258,7 +255,6 @@ public class WsHandler {
     }
 
     private void sendErrorMessage(Session session, String errorMessage) {
-        System.out.println("Send error " + errorMessage);
         ErrorSM messageObject = new ErrorSM("Error: " + errorMessage);
         try {
             session.getRemote().sendString(jsonService.toJson(messageObject));

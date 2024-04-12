@@ -22,10 +22,10 @@ public class LogoutCmd implements CommandEndpoint {
         if (inputs.length != 0) {
             throw new CommandHandler.BadArgsException("Unexpected arguments after command");
         }
-        if (!validInContext(state)) {
+        if (!state.isLoggedIn()) {
             throw new CommandHandler.BadContextException("You are not logged in.");
         } else if (state.getGameState() != null) {
-            throw new CommandHandler.BadContextException("Please logout first.");
+            throw new CommandHandler.BadContextException("Please leave your game first.");
         }
         if (state.serverFacade.logout(state.loginState())) {
             System.out.println(EscapeSequences.SET_TEXT_COLOR_GREEN + "Logged out successfully!");

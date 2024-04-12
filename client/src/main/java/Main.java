@@ -1,8 +1,6 @@
 import commands.Command;
 import commands.CommandHandler;
-import commands.gameplay.DrawCmd;
-import commands.gameplay.LeaveCmd;
-import commands.gameplay.MoveCmd;
+import commands.gameplay.*;
 import commands.games.CreateGameCmd;
 import commands.games.JoinGameCmd;
 import commands.games.ListGamesCmd;
@@ -30,8 +28,10 @@ public class Main {
         handler.add(new Command(new String[] {"join", "j"}, new JoinGameCmd(true, "ws://localhost:15723")));
         handler.add(new Command(new String[] {"watch", "w"}, new JoinGameCmd(false, "ws://localhost:15723")));
         handler.add(new Command(new String[] {"draw", "dr"}, new DrawCmd()));
-        handler.add(new Command(new String[] {"leave", "lv"}, new LeaveCmd()));
+        handler.add(new Command(new String[] {"show", "sh"}, new ShowMovesCmd()));
         handler.add(new Command(new String[] {"move", "mv"}, new MoveCmd()));
+        handler.add(new Command(new String[] {"resign", "res"}, new ResignCmd()));
+        handler.add(new Command(new String[] {"leave", "lv"}, new LeaveCmd()));
         return handler;
     }
 

@@ -27,7 +27,7 @@ public class DrawCmd implements CommandEndpoint {
         }
 
         StringBuilder out = new StringBuilder();
-        gs.draw(out, null);
+        gs.draw(out, null, null);
         System.out.println(out);
     }
 

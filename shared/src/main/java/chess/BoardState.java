@@ -73,6 +73,7 @@ public final class BoardState {
 
     public void flipTeam() {
         teamToMove = teamToMove.opponent();
+        enPassantFile = 0;
     }
 
     public TeamInfo getTeamInfo(ChessGame.TeamColor color) {

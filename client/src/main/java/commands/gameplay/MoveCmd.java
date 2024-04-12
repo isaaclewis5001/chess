@@ -3,7 +3,6 @@ package commands.gameplay;
 import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
-import chess.InvalidMoveException;
 import commands.CommandEndpoint;
 import commands.CommandHandler;
 import state.AppState;
@@ -23,7 +22,7 @@ public class MoveCmd implements CommandEndpoint {
         return "Makes a move";
     }
 
-    private ChessPosition parseSquare(String text) throws CommandHandler.BadArgsException {
+    static ChessPosition parseSquare(String text) throws CommandHandler.BadArgsException {
         if (text.length() != 2) {
             throw new CommandHandler.BadArgsException("Moves have the form [file][rank], e.g. c4");
         }
@@ -72,14 +71,8 @@ public class MoveCmd implements CommandEndpoint {
 
         try {
             gs.move(move);
-            gs.getGame().makeMove(move);
-            StringBuilder builder = new StringBuilder();
-            gs.draw(builder, null);
-            System.out.println(builder);
         } catch (IOException ex) {
             CommonMessages.issueConnecting();
-        } catch (InvalidMoveException ex) {
-            throw new RuntimeException("Game did not accept the move");
         }
     }
 
